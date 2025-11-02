@@ -117,6 +117,17 @@ function LoadAFADConfig($adwaresId)
 }
 
 /**
+ * AFAD設定を取得（LoadAFADConfigのエイリアス）
+ *
+ * @param int $adwaresId 広告ID
+ * @return array|null AFAD設定配列
+ */
+function GetAFADConfig($adwaresId)
+{
+    return LoadAFADConfig($adwaresId);
+}
+
+/**
  * AFAD設定のキャッシュをクリア
  */
 function ClearAFADConfigCache()
@@ -237,6 +248,127 @@ function SetAFADSessionCookie($adwaresId, $sessionId, $expireDays = 30)
     }
 
     return $result;
+}
+
+/**
+ * URLパラメータまたはCookieからAFADセッションIDを取得
+ *
+ * @param string $paramName パラメータ名（例: 'afad_sid'）
+ * @return string|null セッションID、見つからない場合はnull
+ */
+function GetAFADSessionId($paramName)
+{
+    // まずURLパラメータから取得を試みる
+    if (isset($_GET[$paramName]) && !empty($_GET[$paramName])) {
+        $sessionId = (string)$_GET[$paramName];
+
+        if (ValidateAFADSessionId($sessionId)) {
+            LogAFADInfo('AFAD session ID received from URL parameter', [
+                'param_name' => $paramName,
+                'session_id' => $sessionId
+            ]);
+            return $sessionId;
+        } else {
+            LogAFADError('Invalid AFAD session ID in URL parameter', 'Validation failed', [
+                'param_name' => $paramName,
+                'session_id' => $sessionId
+            ]);
+            return null;
+        }
+    }
+
+    // URLパラメータになければCookieから取得を試みる
+    $cookieName = "afad_session_{$paramName}";
+    if (isset($_COOKIE[$cookieName]) && !empty($_COOKIE[$cookieName])) {
+        $sessionId = (string)$_COOKIE[$cookieName];
+
+        if (ValidateAFADSessionId($sessionId)) {
+            LogAFADInfo('AFAD session ID retrieved from cookie', [
+                'cookie_name' => $cookieName,
+                'session_id' => $sessionId
+            ]);
+            return $sessionId;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * AFADセッションIDをCookieに保存（簡易版）
+ *
+ * @param string $sessionId AFADセッションID
+ * @param int $expireDays Cookie有効期限(日数)
+ * @param string $paramName パラメータ名（Cookie名の一部として使用）
+ * @return bool 成功時true
+ */
+function StoreAFADSessionIdToCookie($sessionId, $expireDays = 30, $paramName = 'default')
+{
+    if (!ValidateAFADSessionId($sessionId)) {
+        LogAFADError('Cannot store invalid AFAD session ID to cookie', 'Validation failed', [
+            'session_id' => $sessionId
+        ]);
+        return false;
+    }
+
+    $cookieName = "afad_session_{$paramName}";
+    $expire = time() + ($expireDays * 86400);
+    $isSecure = IsHTTPS();
+
+    $options = [
+        'expires' => $expire,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $isSecure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ];
+
+    $result = setcookie($cookieName, $sessionId, $options);
+
+    if ($result) {
+        LogAFADInfo('AFAD session ID stored to cookie', [
+            'cookie_name' => $cookieName,
+            'expire_days' => $expireDays
+        ]);
+    }
+
+    return $result;
+}
+
+/**
+ * CookieからAFADセッションIDを取得（汎用版）
+ *
+ * @param string $paramName パラメータ名（省略時は全てのCookieを検索）
+ * @return string|null セッションID、見つからない場合はnull
+ */
+function GetAFADSessionIdFromCookie($paramName = null)
+{
+    // 特定のパラメータ名が指定されている場合
+    if ($paramName !== null) {
+        $cookieName = "afad_session_{$paramName}";
+        if (isset($_COOKIE[$cookieName]) && !empty($_COOKIE[$cookieName])) {
+            $sessionId = (string)$_COOKIE[$cookieName];
+            if (ValidateAFADSessionId($sessionId)) {
+                return $sessionId;
+            }
+        }
+        return null;
+    }
+
+    // パラメータ名が指定されていない場合は、全てのAFAD Cookieを検索
+    foreach ($_COOKIE as $name => $value) {
+        if (strpos($name, 'afad_session_') === 0) {
+            if (ValidateAFADSessionId($value)) {
+                LogAFADInfo('AFAD session ID found in cookie', [
+                    'cookie_name' => $name
+                ]);
+                return (string)$value;
+            }
+        }
+    }
+
+    return null;
 }
 
 /**
@@ -376,9 +508,10 @@ function BuildAFADPostbackURL($afadConfig, $sessionId, $conversionData = [])
         $params['amount'] = $conversionData['amount'];
     }
 
-    // オプションパラメータ: status (大文字Sに注意)
-    if (!empty($afadConfig['approval_status'])) {
-        $params['Status'] = $afadConfig['approval_status'];
+    // オプションパラメータ: Status (大文字Sに注意)
+    // AFAD仕様: 1=承認待ち、2=承認、3=否認
+    if (!empty($conversionData['status'])) {
+        $params['Status'] = $conversionData['status'];
     }
 
     $url = $baseUrl . '?' . http_build_query($params);
@@ -454,50 +587,51 @@ function SendHTTPRequest($url, $timeout = 10)
 /**
  * AFADポストバックを送信
  *
- * @param int $accessId アクセスID
- * @param int $adwaresId 広告ID
- * @param array $conversionData 成果データ ['uid' => '', 'uid2' => '', 'amount' => 0]
- * @return array ['success' => bool, 'message' => string, 'log_id' => int|null]
+ * @param array $afadConfig AFAD設定配列
+ * @param string $sessionId AFADセッションID
+ * @param string $accessId アクセスID
+ * @param array $conversionData 成果データ ['uid' => '', 'uid2' => '', 'amount' => 0, 'status' => 1]
+ * @return array ['success' => bool, 'status' => int, 'response_body' => string, 'error' => string, 'retry_count' => int]
  */
-function SendAFADPostback($accessId, $adwaresId, $conversionData = [])
+function SendAFADPostback($afadConfig, $sessionId, $accessId, $conversionData = [])
 {
-    // AFAD設定を読み込み
-    $afadConfig = LoadAFADConfig($adwaresId);
-
-    if (!$afadConfig) {
-        WriteAFADLog('AFAD config not found', ['adwares_id' => $adwaresId]);
-        return ['success' => false, 'message' => 'AFAD連携が有効ではありません'];
-    }
-
-    // セッションIDを取得
-    $sessionId = GetAFADSessionFromAccess($accessId);
-
-    if (!$sessionId) {
-        // Cookieからフォールバック取得
-        $sessionId = GetAFADSessionFromCookie($adwaresId);
-    }
-
-    if (!$sessionId) {
-        WriteAFADLog('AFAD session ID not found', [
-            'access_id' => $accessId,
-            'adwares_id' => $adwaresId
+    // バリデーション
+    if (!$afadConfig || !isset($afadConfig['postback_url'])) {
+        LogAFADError('Invalid AFAD config', 'Config is null or missing postback_url', [
+            'access_id' => $accessId
         ]);
-        return ['success' => false, 'message' => 'AFADセッションIDが見つかりません'];
+        return [
+            'success' => false,
+            'status' => 0,
+            'response_body' => null,
+            'error' => 'AFAD連携設定が無効です',
+            'retry_count' => 0
+        ];
     }
 
-    // すでに送信済みかチェック
-    if (IsAFADPostbackSent($accessId)) {
-        WriteAFADLog('AFAD postback already sent', ['access_id' => $accessId]);
-        return ['success' => false, 'message' => 'すでに送信済みです'];
+    if (!ValidateAFADSessionId($sessionId)) {
+        LogAFADError('Invalid AFAD session ID', 'Validation failed', [
+            'access_id' => $accessId,
+            'session_id' => $sessionId
+        ]);
+        return [
+            'success' => false,
+            'status' => 0,
+            'response_body' => null,
+            'error' => 'AFADセッションIDが無効です',
+            'retry_count' => 0
+        ];
     }
 
     // ポストバックURLを構築
     $postbackUrl = BuildAFADPostbackURL($afadConfig, $sessionId, $conversionData);
 
     // HTTPリクエスト送信
-    $result = SendHTTPRequest($postbackUrl, $afadConfig['timeout_seconds']);
+    $timeout = $afadConfig['timeout_seconds'] ?? 10;
+    $httpResult = SendHTTPRequest($postbackUrl, $timeout);
 
     // 送信結果を記録
+    $adwaresId = $afadConfig['adwares_id'] ?? null;
     $logId = RecordAFADPostback(
         $accessId,
         $afadConfig['id'],
@@ -505,25 +639,33 @@ function SendAFADPostback($accessId, $adwaresId, $conversionData = [])
         $sessionId,
         $postbackUrl,
         $conversionData,
-        $result
+        $httpResult
     );
 
-    // アクセステーブルを更新
-    UpdateAccessAFADStatus($accessId, $result['success'], $result);
-
     // リトライ処理
-    if (!$result['success']) {
+    $retryCount = 0;
+    if (!$httpResult['success']) {
+        $retryMax = $afadConfig['retry_max'] ?? 3;
         $retryCount = GetAFADRetryCount($accessId);
-        if ($retryCount < $afadConfig['retry_max']) {
-            ScheduleAFADRetry($accessId, $afadConfig['id'], $sessionId, $retryCount, $afadConfig['retry_max'], $result['error']);
+
+        if ($retryCount < $retryMax) {
+            ScheduleAFADRetry(
+                $accessId,
+                $afadConfig['id'],
+                $sessionId,
+                $retryCount,
+                $retryMax,
+                $httpResult['error'] ?? 'Unknown error'
+            );
         }
     }
 
     return [
-        'success' => $result['success'],
-        'message' => $result['success'] ? 'ポストバック送信成功' : 'ポストバック送信失敗',
-        'log_id' => $logId,
-        'http_code' => $result['http_code']
+        'success' => $httpResult['success'],
+        'status' => $httpResult['http_code'] ?? 0,
+        'response_body' => $httpResult['response'] ?? null,
+        'error' => $httpResult['error'] ?? null,
+        'retry_count' => $retryCount
     ];
 }
 
@@ -924,6 +1066,49 @@ function WriteAFADLog($message, $data = null)
     $logLine .= "\n";
 
     return @file_put_contents($logFile, $logLine, FILE_APPEND | LOCK_EX) !== false;
+}
+
+/**
+ * INFOレベルのログを出力
+ *
+ * @param string $message ログメッセージ
+ * @param array|null $data 追加データ
+ * @return bool 成功時true
+ */
+function LogAFADInfo($message, $data = null)
+{
+    global $CONFIG_AFAD_LOG_LEVEL;
+
+    // ログレベル1以上で出力
+    if (isset($CONFIG_AFAD_LOG_LEVEL) && $CONFIG_AFAD_LOG_LEVEL >= 1) {
+        return WriteAFADLog("[INFO] " . $message, $data);
+    }
+
+    return false;
+}
+
+/**
+ * ERRORレベルのログを出力
+ *
+ * @param string $message ログメッセージ
+ * @param string|null $error エラー詳細
+ * @param array|null $data 追加データ
+ * @return bool 成功時true
+ */
+function LogAFADError($message, $error = null, $data = null)
+{
+    global $CONFIG_AFAD_LOG_LEVEL;
+
+    // ログレベル0以上（常に出力）
+    if (!isset($CONFIG_AFAD_LOG_LEVEL) || $CONFIG_AFAD_LOG_LEVEL >= 0) {
+        $errorData = $data ?? [];
+        if ($error !== null) {
+            $errorData['error'] = $error;
+        }
+        return WriteAFADLog("[ERROR] " . $message, $errorData);
+    }
+
+    return false;
 }
 
 /**

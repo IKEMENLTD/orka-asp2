@@ -290,7 +290,7 @@
 
 					if ($afadSessionId) {
 						// セッションIDをCookieに保存（フォールバック用）
-						StoreAFADSessionIdToCookie($afadSessionId, $afadConfig['cookie_expire_days']);
+						StoreAFADSessionIdToCookie($afadSessionId, $afadConfig['cookie_expire_days'], $paramName);
 					}
 				}
 			} catch (Exception $e) {
