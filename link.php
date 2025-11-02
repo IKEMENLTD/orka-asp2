@@ -3,19 +3,19 @@
 	/*******************************************************************************************************
 	 * <PRE>
 	 *
-	 * link.php - ê—pƒvƒƒOƒ‰ƒ€
-	 * LƒNƒŠƒbƒN‚ğŒv‘ª‚·‚éƒvƒƒOƒ‰ƒ€B
+	 * link.php - ï¿½ï¿½pï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	 * ï¿½Lï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½B
 	 * 
-	 * ˆÈ‰º‚ÌŒ`®‚ÅƒAƒNƒZƒX‚³‚ê‚½ê‡AƒNƒŠƒbƒN•ñV‚ğ’Ç‰Á‚µ‚ÄL‚Éİ’è‚³‚ê‚½URL‚ÉƒŠƒ_ƒCƒŒƒNƒg‚µ‚Ü‚·B
+	 * ï¿½È‰ï¿½ï¿½ÌŒ`ï¿½ï¿½ï¿½ÅƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ê‚½ï¿½ê‡ï¿½Aï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ÄLï¿½ï¿½ï¿½Éİ’è‚³ï¿½ê‚½URLï¿½Éƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 	 * http://example.com/link.php?adwares=[foo]&id=[var]
-	 * foo = LID
-	 * var = ƒAƒtƒBƒŠƒGƒCƒ^[ID
+	 * foo = ï¿½Lï¿½ï¿½ID
+	 * var = ï¿½Aï¿½tï¿½Bï¿½ï¿½ï¿½Gï¿½Cï¿½^ï¿½[ID
 	 *
 	 * </PRE>
 	 *******************************************************************************************************/
 
 	/*******************************************************************************************************
-	 * ƒƒCƒ“ˆ—
+	 * ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 *******************************************************************************************************/
 
 	ob_start();
@@ -23,6 +23,8 @@
 	try
 	{
 		include_once 'custom/head_main.php';
+		include_once 'custom/extends/afadConf.php';
+		include_once 'module/afad_postback.inc';
 
 		CheckQuery();
 		RequestGUID();
@@ -30,11 +32,11 @@
 
 		$adwares = GetAdwares();
 
-		if( IsEnoughBudget( $adwares ) ) //—\Z‚ª—]‚Á‚Ä‚¢‚éê‡
+		if( IsEnoughBudget( $adwares ) ) //ï¿½\ï¿½Zï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 		{
-			if( IsPassageWait( $adwares ) ) //Å’á‘Ò‚¿ŠÔ‚ğ‰ß‚¬‚Ä‚¢‚éê‡
+			if( IsPassageWait( $adwares ) ) //ï¿½Å’ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ß‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			{
-				if( IsThroughBlackList() ) //ƒuƒ‰ƒbƒNƒŠƒXƒg‚Éˆø‚Á‚©‚©‚ç‚È‚©‚Á‚½ê‡
+				if( IsThroughBlackList() ) //ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½gï¿½Éˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
 				{
 					$access = AddAccess( $adwares );
 					$pay    = AddClickReward( $adwares , $access );
@@ -43,7 +45,7 @@
 
 			DoRedirect( $adwares , $access );
 		}
-		else //—\Z‚ª—]‚Á‚Ä‚¢‚È‚¢ê‡
+		else //ï¿½\ï¿½Zï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 			DoRedirectToOver( $adwares );
 	}
 	catch( Exception $e_ )
@@ -58,14 +60,14 @@
 	ob_end_flush();
 
 	/*******************************************************************************************************
-	 * ŠÖ”
+	 * ï¿½Öï¿½
 	 *******************************************************************************************************/
 
-	//¡ƒ`ƒFƒbƒN //
+	//ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½N //
 
 	/**
-		@brief   ƒNƒGƒŠ‚ğŒŸØ‚·‚éB
-		@details ƒNƒGƒŠ‚É•s³‚È’l‚ªŠÜ‚Ü‚ê‚éê‡A—áŠO‚ğƒXƒ[‚µ‚Ü‚·B
+		@brief   ï¿½Nï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½ï¿½ï¿½B
+		@details ï¿½Nï¿½Gï¿½ï¿½ï¿½É•sï¿½ï¿½ï¿½È’lï¿½ï¿½ï¿½Ü‚Ü‚ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½Oï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 	*/
 	function CheckQuery()
 	{
@@ -76,57 +78,57 @@
 	}
 
 	/**
-		@brief  L‚Ì—\Z‚ğŒŸØ‚·‚éB
-		@param  $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
-		@return —\Z‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢A‚Ü‚½‚Í—]‚Á‚Ä‚¢‚éê‡‚ÍtrueB\n
-		        —\Z‚ª—]‚Á‚Ä‚¢‚È‚¢ê‡‚ÍfalseB
+		@brief  ï¿½Lï¿½ï¿½ï¿½Ì—\ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½ï¿½ï¿½B
+		@param  $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@return ï¿½\ï¿½Zï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½Aï¿½Ü‚ï¿½ï¿½Í—]ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ï¿½trueï¿½B\n
+		        ï¿½\ï¿½Zï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½falseï¿½B
 	*/
 	function IsEnoughBudget( $adwares_ )
 	{
-		global $ADWARES_LIMIT_TYPE_YEN;          //¬‰Ê•ñV
-		global $ADWARES_LIMIT_TYPE_CNT;          //ƒNƒŠƒbƒN”
-		global $ADWARES_LIMIT_TYPE_CNT_CLICK;    //ƒNƒŠƒbƒN•ñV
-		global $ADWARES_LIMIT_TYPE_CNT_CONTINUE; //Œp‘±•ñV
+		global $ADWARES_LIMIT_TYPE_YEN;          //ï¿½ï¿½ï¿½Ê•ï¿½V
+		global $ADWARES_LIMIT_TYPE_CNT;          //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½
+		global $ADWARES_LIMIT_TYPE_CNT_CLICK;    //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½V
+		global $ADWARES_LIMIT_TYPE_CNT_CONTINUE; //ï¿½pï¿½ï¿½ï¿½ï¿½V
 
-		//—\Z‚Ìİ’è‚ğæ“¾‚·‚é
+		//ï¿½\ï¿½Zï¿½Ìİ’ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
 		$budgetValue = $adwares_->getData( 'limits' );
 		$budgetType  = $adwares_->getData( 'limit_type' );
 
-		//İ’è‚É‰‚¶‚Ä”äŠrˆ—‚ğU‚è•ª‚¯‚é
+		//ï¿½İ’ï¿½É‰ï¿½ï¿½ï¿½ï¿½Ä”ï¿½rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Uï¿½è•ªï¿½ï¿½ï¿½ï¿½
 		switch( $budgetType )
 		{
-			case $ADWARES_LIMIT_TYPE_YEN : //¬‰Ê•ñVŠz
+			case $ADWARES_LIMIT_TYPE_YEN : //ï¿½ï¿½ï¿½Ê•ï¿½Vï¿½z
 				return ( $adwares_->getData( 'money_count' ) < $budgetValue );
 
-			case $ADWARES_LIMIT_TYPE_CNT : //ƒNƒŠƒbƒN‰ñ”
+			case $ADWARES_LIMIT_TYPE_CNT : //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½
 				return ( $adwares_->getData( 'pay_count' ) < $budgetValue );
 
-			case $ADWARES_LIMIT_TYPE_CNT_CLICK : //ƒNƒŠƒbƒN•ñVŠz
+			case $ADWARES_LIMIT_TYPE_CNT_CLICK : //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½z
 				return ( $adwares_->getData( 'click_money_count' ) < $budgetValue );
 
-			case $ADWARES_LIMIT_TYPE_CNT_CONTINUE : //Œp‘±•ñVŠz
+			case $ADWARES_LIMIT_TYPE_CNT_CONTINUE : //ï¿½pï¿½ï¿½ï¿½ï¿½Vï¿½z
 				return ( $adwares_->getData( 'continue_money_count' ) < $budgetValue );
 
-			default : //—\ZãŒÀ‚È‚µ
+			default : //ï¿½\ï¿½Zï¿½ï¿½ï¿½ï¿½È‚ï¿½
 				return true;
 		}
 	}
 
 	/**
-		@brief  Å’á‘Ò‚¿ŠÔ‚ğŒŸØ‚·‚éB
-		@param  $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
-		@return ƒNƒŠƒbƒN—š—ğ‚ª‚È‚¢‚©AƒNƒŠƒbƒN•ñV‚ÌÅ’á‘Ò‚¿ŠÔ‚ğŒo‰ß‚µ‚Ä‚¢‚éê‡‚ÍtrueB\n
-		        ƒNƒŠƒbƒN•ñV‚ÌÅ’á‘Ò‚¿ŠÔ‚ğŒo‰ß‚µ‚Ä‚¢‚È‚¢ê‡‚ÍfalseB
+		@brief  ï¿½Å’ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½ï¿½ï¿½B
+		@param  $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@return ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ÌÅ’ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½oï¿½ß‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ï¿½trueï¿½B\n
+		        ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ÌÅ’ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½oï¿½ß‚ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½falseï¿½B
 	*/
 	function IsPassageWait( $adwares_ )
 	{
-		//Œ»İ‚ÌŒo‰ßŠÔ‚ğæ“¾‚·‚é
+		//ï¿½ï¿½ï¿½İ‚ÌŒoï¿½ßï¿½ï¿½Ô‚ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
 		$passageTime = GetPassageTime( $adwares_ );
 
-		if( 0 > $passageTime ) //ƒAƒNƒZƒX‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡
+		if( 0 > $passageTime ) //ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡
 			return true;
 
-		//ƒNƒŠƒbƒN•ñV‚ÌÅ’á‘Ò‚¿ŠÔ‚ğæ“¾‚·‚é
+		//ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ÌÅ’ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
 		$waitNum  = $adwares_->getData( 'span' );
 		$waitUnit = $adwares_->getData( 'span_type' );
 		$magnify  = Array( 's' => 1 , 'm' => 60 , 'h' => 60 * 60 , 'd' => 60 * 60 * 24 , 'w' => 60 * 60 * 24 * 7, );
@@ -136,8 +138,8 @@
 	}
 
 	/**
-		@brief  IP‚ÆUA‚ğƒuƒ‰ƒbƒNƒŠƒXƒg‚Æ”äŠr‚·‚éB
-		@return ƒuƒ‰ƒbƒNƒŠƒXƒg‚Æˆê’v‚·‚éê‡‚ÍfalseA‚»‚êˆÈŠO‚ÍtrueB
+		@brief  IPï¿½ï¿½UAï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½gï¿½Æ”ï¿½rï¿½ï¿½ï¿½ï¿½B
+		@return ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½gï¿½Æˆï¿½vï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½falseï¿½Aï¿½ï¿½ï¿½ï¿½ÈŠOï¿½ï¿½trueï¿½B
 	*/
 	function IsThroughBlackList()
 	{
@@ -148,15 +150,15 @@
 		$uaTable = $db->searchTable( $table , 'blacklist_mode' , '=' , 'user_agent' );
 		$uas     = $db->getDataList( $uaTable , 'user_agent' );
 
-		foreach( $ips as $ip ) //‘S‚Ä‚ÌIPƒuƒ‰ƒbƒNƒŠƒXƒg‚ğˆ—
+		foreach( $ips as $ip ) //ï¿½Sï¿½Ä‚ï¿½IPï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			if( FALSE !== strpos( $_SERVER[ 'REMOTE_ADDR' ] , $ip ) ) //w’è•”•ª‚ªŠÜ‚Ü‚ê‚éê‡
+			if( FALSE !== strpos( $_SERVER[ 'REMOTE_ADDR' ] , $ip ) ) //ï¿½wï¿½è•”ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚Ü‚ï¿½ï¿½ê‡
 				{ return false; }
 		}
 
-		foreach( $uas as $ua ) //‘S‚Ä‚ÌUAƒuƒ‰ƒbƒNƒŠƒXƒg‚ğˆ—
+		foreach( $uas as $ua ) //ï¿½Sï¿½Ä‚ï¿½UAï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
-			if( FALSE !== strpos( $_SERVER[ 'HTTP_USER_AGENT' ] , $ip ) ) //w’è•”•ª‚ªŠÜ‚Ü‚ê‚éê‡
+			if( FALSE !== strpos( $_SERVER[ 'HTTP_USER_AGENT' ] , $ip ) ) //ï¿½wï¿½è•”ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚Ü‚ï¿½ï¿½ê‡
 				{ return false; }
 		}
 
@@ -164,77 +166,77 @@
 	}
 
 	/**
-		@brief  ‚±‚Ìƒ†[ƒU[‚ÌƒAƒNƒZƒX‚ğŒŸõ‚·‚éB
-		@param  $access_ TableModelƒIƒuƒWƒFƒNƒgB
-		@return TableModelƒIƒuƒWƒFƒNƒgB
+		@brief  ï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½Uï¿½[ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+		@param  $access_ TableModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@return TableModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function SearchAccess( $access_ )
 	{
-		global $terminal_type; //’[––í•Ê
+		global $terminal_type; //ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½
 
-		if( 0 >= $terminal_type ) //PC‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡
+		if( 0 >= $terminal_type ) //PCï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡
 			$access_->search( 'ipaddress' , '=' , getenv( 'REMOTE_ADDR' ) );
-		else //Œg‘Ñ‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡
+		else //ï¿½gï¿½Ñ‚ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡
 		{
 			$utn = MobileUtil::getMobileID();
 
-			if( $utn ) //ŒÂ‘Ì¯•Ê”Ô†‚ªæ“¾‚Å‚«‚éê‡
+			if( $utn ) //ï¿½Â‘Ìï¿½ï¿½Ê”Ôï¿½ï¿½ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½ï¿½ê‡
 				$access_->search( 'utn' , '=' , $utn );
-			else //ŒÂ‘Ì¯•Ê”Ô†‚ªæ“¾‚Å‚«‚È‚¢ê‡
+			else //ï¿½Â‘Ìï¿½ï¿½Ê”Ôï¿½ï¿½ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 				$access_->search( 'useragent' , '=' , getenv( 'HTTP_USER_AGENT' ) );
 		}
 
 		return $access_;
 	}
 
-	//¡æ“¾
+	//ï¿½ï¿½ï¿½æ“¾
 
 	/**
-		@brief  Lƒf[ƒ^‚ğæ“¾‚·‚éB
-		@return RecordModelƒIƒuƒWƒFƒNƒgB
+		@brief  ï¿½Lï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½B
+		@return RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function GetAdwares()
 	{
-		if( $_GET[ 's_adwares' ] ) //ƒNƒ[ƒYƒhLID‚ªw’è‚³‚ê‚Ä‚¢‚éê‡
+		if( $_GET[ 's_adwares' ] ) //ï¿½Nï¿½ï¿½ï¿½[ï¿½Yï¿½hï¿½Lï¿½ï¿½IDï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			return new RecordModel( 'secretAdwares' , $_GET[ 's_adwares' ] );
-		else if( $_GET[ 'adwares' ] ) //’Êí‚ÌLID‚ªw’è‚³‚ê‚Ä‚¢‚éê‡
+		else if( $_GET[ 'adwares' ] ) //ï¿½Êï¿½ÌLï¿½ï¿½IDï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			return new RecordModel( 'adwares' , $_GET[ 'adwares' ] );
-		else //LID‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢ê‡
-			throw new InvalidQueryException( 'LID‚ªw’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ' );
+		else //ï¿½Lï¿½ï¿½IDï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
+			throw new InvalidQueryException( 'ï¿½Lï¿½ï¿½IDï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½' );
 	}
 
 	/**
-		@brief  cookie‚©‚çƒ†[ƒU[¯•ÊƒnƒbƒVƒ…‚ğæ“¾‚·‚éB
-		@return ƒ†[ƒU[¯•ÊƒnƒbƒVƒ…B
+		@brief  cookieï¿½ï¿½ï¿½çƒ†ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½Êƒnï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½B
+		@return ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½Êƒnï¿½bï¿½Vï¿½ï¿½ï¿½B
 	*/
 	function GetCookieID()
 	{
-		if( $_COOKIE[ 'adwares_cookie' ] ) //Šù‚Écookie‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡
+		if( $_COOKIE[ 'adwares_cookie' ] ) //ï¿½ï¿½ï¿½ï¿½cookieï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			$cookieID = $_COOKIE[ 'adwares_cookie' ];
-		else //cookie‚ª‚È‚¢ê‡
+		else //cookieï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡
 			$cookieID = md5( time() . getenv( 'REMOTE_ADDR' ) );
 
 		return $cookieID;
 	}
 
 	/**
-		@brief  ‚±‚Ìƒ†[ƒU[‚ÌÅIƒAƒNƒZƒX‚©‚ç‚ÌŒo‰ßŠÔ‚ğæ“¾‚·‚éB
-		@param  $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
-		@return ƒAƒNƒZƒX‚ªŒ©‚Â‚©‚Á‚½ê‡‚ÍŒo‰ßŠÔB\n
-		        ƒAƒNƒZƒX‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡‚Í-1B
+		@brief  ï¿½ï¿½ï¿½Ìƒï¿½ï¿½[ï¿½Uï¿½[ï¿½ÌÅIï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ÌŒoï¿½ßï¿½ï¿½Ô‚ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½B
+		@param  $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@return ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍŒoï¿½ßï¿½ï¿½ÔB\n
+		        ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½-1ï¿½B
 	*/
 	function GetPassageTime( $adwares_ )
 	{
-		if( $adwares_->getData( 'use_cookie_interval' ) ) //ƒNƒŠƒbƒNŠÇ—‚Écookie‚ğg—p‚·‚éê‡
+		if( $adwares_->getData( 'use_cookie_interval' ) ) //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½Ç—ï¿½ï¿½ï¿½cookieï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ê‡
 		{
-			if( $_COOKIE[ 'interval_' . $adwares_->getID() ] ) //cookie‚ªæ“¾‚Å‚«‚éê‡
+			if( $_COOKIE[ 'interval_' . $adwares_->getID() ] ) //cookieï¿½ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½ï¿½ê‡
 				$passageTime = time() - $_COOKIE[ 'interval_' . $adwares_->getID() ];
-			else //cookie‚ªæ“¾‚Å‚«‚È‚¢ê‡
+			else //cookieï¿½ï¿½ï¿½æ“¾ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 				$passageTime = -1;
 		}
-		else //ƒNƒŠƒbƒNŠÇ—‚ÉƒAƒNƒZƒXƒƒO‚ğg—p‚·‚éê‡
+		else //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½Ç—ï¿½ï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ê‡
 		{
-			//ƒAƒNƒZƒX‚ğŒŸõ‚·‚é
+			//ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			$access = new TableModel( 'access' );
 			$access = SearchAccess( $access );
 
@@ -242,34 +244,64 @@
 			$access->sortDesc( 'regist' );
 			$row = $access->getRow();
 
-			if( $row ) //ƒŒƒR[ƒh‚ªŒ©‚Â‚©‚Á‚½ê‡
+			if( $row ) //ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
 			{
 				$aRec   = $access->getRecordModel( 0 );
 				$regist = $aRec->getData( 'regist' );
 
 				$passageTime = time() - $regist;
 			}
-			else //ƒŒƒR[ƒh‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡
+			else //ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡
 				$passageTime = -1;
 		}
 
 		return $passageTime;
 	}
 
-	//¡ˆ—
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	/**
-		@brief  ƒAƒNƒZƒXƒƒO‚ğ’Ç‰Á‚·‚éB
-		@param  $adwares_ , RecordModelƒIƒuƒWƒFƒNƒgB
-		@return RecordModelƒIƒuƒWƒFƒNƒgB
+		@brief  ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½Oï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½B
+		@param  $adwares_ , RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@return RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function AddAccess( $adwares_ )
 	{
 		global $ACTIVE_NONE;
+		global $CONFIG_AFAD_ENABLE;
 
 		$cookieID = GetCookieID();
 
-		//ƒAƒNƒZƒXƒŒƒR[ƒh‚ğ“o˜^‚·‚é
+		// AFADé€£æº: ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’å–å¾—ãƒ»æ¤œè¨¼
+		$afadSessionId = null;
+		$afadConfigId = null;
+
+		if ($CONFIG_AFAD_ENABLE) {
+			try {
+				// AFADè¨­å®šã‚’å–å¾—
+				$afadConfig = GetAFADConfig($adwares_->getID());
+
+				if ($afadConfig && $afadConfig['enabled']) {
+					$afadConfigId = $afadConfig['id'];
+					$paramName = $afadConfig['parameter_name'];
+
+					// URLãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¾ãŸã¯Cookieã‹ã‚‰ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’å–å¾—
+					$afadSessionId = GetAFADSessionId($paramName);
+
+					if ($afadSessionId) {
+						// ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’Cookieã«ä¿å­˜ï¼ˆãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯ç”¨ï¼‰
+						StoreAFADSessionIdToCookie($afadSessionId, $afadConfig['cookie_expire_days'], $paramName);
+					}
+				}
+			} catch (Exception $e) {
+				// AFADé€£æºã®ã‚¨ãƒ©ãƒ¼ã¯ãƒ­ã‚°ã«è¨˜éŒ²ã™ã‚‹ãŒã€ãƒ¡ã‚¤ãƒ³å‡¦ç†ã¯ç¶™ç¶š
+				LogAFADError('AFAD session capture failed', $e->getMessage(), [
+					'adwares_id' => $adwares_->getID()
+				]);
+			}
+		}
+
+		//ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½
 		$access = new FactoryModel( 'access' );
 		$access->setID( md5( time() . getenv( 'REMOTE_ADDR' ) ) );
 		$access->setData( 'ipaddress'    , getenv( 'REMOTE_ADDR' ) );
@@ -282,6 +314,14 @@
 		$access->setData( 'state'        , $ACTIVE_NONE );
 		$access->setData( 'utn'          , MobileUtil::getMobileID() );
 
+		// AFADé€£æº: ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã¨è¨­å®šIDã‚’ã‚¢ã‚¯ã‚»ã‚¹ãƒ¬ã‚³ãƒ¼ãƒ‰ã«ä¿å­˜
+		if ($afadSessionId) {
+			$access->setData( 'afad_session_id', $afadSessionId );
+		}
+		if ($afadConfigId) {
+			$access->setData( 'afad_config_id', $afadConfigId );
+		}
+
 		$access = $access->register();
 
 		UpdateCookie( $adwares_ , $cookieID );
@@ -290,9 +330,9 @@
 	}
 
 	/**
-		@brief ƒNƒŠƒbƒN•ñV‚ğ’Ç‰Á‚·‚éB
-		@param $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
-		@param $access_  RecordModelƒIƒuƒWƒFƒNƒgB
+		@brief ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½B
+		@param $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@param $access_  RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function AddClickReward( $adwares_ , $access_ )
 	{
@@ -302,22 +342,22 @@
 
 		$nUser = new RecordModel( 'nUser' , $access_->getData( 'owner' ) );
 
-		if( 'secretAdwares' == $adwares_->getType() ) //ƒNƒ[ƒYƒhL‚Ìê‡
+		if( 'secretAdwares' == $adwares_->getType() ) //ï¿½Nï¿½ï¿½ï¿½[ï¿½Yï¿½hï¿½Lï¿½ï¿½ï¿½Ìê‡
 		{
 			$users = $adwares_->getData( 'open_user' );
 
-			if( FALSE === strpos( $users , $nUser->getID() ) ) //ŒöŠJƒ†[ƒU[‚ÉŠÜ‚Ü‚ê‚È‚¢ê‡
+			if( FALSE === strpos( $users , $nUser->getID() ) ) //ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÉŠÜ‚Ü‚ï¿½È‚ï¿½ï¿½ê‡
 				return;
 		}
 
-		//ƒNƒŠƒbƒN•ñV‚Ìİ’è‚ğæ“¾‚·‚é
+		//ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½Ìİ’ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
 		$clickReward    = $adwares_->getData( 'click_money' );
 		$clickReception = $adwares_->getData( 'click_auto' );
 
-		if( 0 >= $clickReward ) //ƒNƒŠƒbƒN•ñV‚Ìİ’è‚ª‚È‚¢ê‡
+		if( 0 >= $clickReward ) //ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½Ìİ’è‚ªï¿½È‚ï¿½ï¿½ê‡
 			return;
 
-		//ƒNƒŠƒbƒN•ñVƒŒƒR[ƒh‚ğ“o˜^‚·‚é
+		//ï¿½Nï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½Vï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½
 		$pay = new FactoryModel( 'click_pay' );
 		$pay->setID( md5( time() . getenv( 'REMOTE_ADDR' ) ) );
 		$pay->setData( 'access_id' , $access_->getID() );
@@ -329,17 +369,17 @@
 		$pay->setData( 'tier2_rate'   , SystemUtil::getSystemData( 'grandchild_per' ) );
 		$pay->setData( 'tier3_rate'   , SystemUtil::getSystemData( 'greatgrandchild_per' ) );
 
-		if( $clickReception ) //©“®”FØ‚ª—LŒø‚Ìê‡
+		if( $clickReception ) //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½Ø‚ï¿½ï¿½Lï¿½ï¿½ï¿½Ìê‡
 		{
 			$pay->setData( 'state' , $ACTIVE_ACTIVATE );
 			$pay = $pay->register();
 
-			//ƒ†[ƒU[‚Ì•ñV‚É’Ç‰Á‚·‚é
+			//ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½Ì•ï¿½Vï¿½É’Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½
 			$pDB  = $pay->getDB();
 			$tier = 0;
 			AddPay( $_GET[ 'id' ] , $clickReward , $pDB , $pay->getRecord() , $tier );
 
-			//L‚Ì—\Z‚ÉŒvã‚·‚é
+			//ï¿½Lï¿½ï¿½ï¿½Ì—\ï¿½Zï¿½ÉŒvï¿½ã‚·ï¿½ï¿½
 			$currentReward = $adwares_->getData( 'money_count' );
 			$currentClick  = $adwares_->getData( 'click_money_count' );
 
@@ -347,10 +387,10 @@
 			$adwares_->setData( 'click_money_count' , $currentClick + 1 );
 			$adwares_->update();
 
-			//ƒ[ƒ‹’Ê’m
+			//ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ê’m
 			sendPayMail( $pay->getRecord() , 'click_pay' );
 		}
-		else //©“®”FØ‚ª–³Œø‚Ìê‡
+		else //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½Ø‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìê‡
 		{
 			$pay->setData( 'state' , 0 );
 			$pay = $pay->register();
@@ -358,7 +398,7 @@
 			sendDisabledPayMail( $pay->getRecord() , 'click_pay' );
 		}
 
-		if( !IsEnoughBudget( $adwares_ ) ) //—\Z‚ğƒI[ƒo[‚µ‚½ê‡
+		if( !IsEnoughBudget( $adwares_ ) ) //ï¿½\ï¿½Zï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
 		{
 			$adwares_->setData( 'open' , false );
 			$adwares_->update();
@@ -366,9 +406,9 @@
 	}
 
 	/**
-		@brief cookie‚ğXV‚·‚éB
-		@param $adwares_  RecordModelƒIƒuƒWƒFƒNƒgB
-		@param $cookieID_ ƒ†[ƒU[¯•ÊƒnƒbƒVƒ…B
+		@brief cookieï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½ï¿½B
+		@param $adwares_  RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@param $cookieID_ ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ï¿½ï¿½Êƒnï¿½bï¿½Vï¿½ï¿½ï¿½B
 	*/
 	function UpdateCookie( $adwares_ , $cookieID_ )
 	{
@@ -385,9 +425,9 @@
 	}
 
 	/**
-		@brief  •¶š—ñ‚ğƒGƒXƒP[ƒv‚·‚éB
-		@param  $str_ ”CˆÓ‚Ì•¶š—ñB
-		@return ƒGƒXƒP[ƒv‚³‚ê‚½•¶š—ñB
+		@brief  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Gï¿½Xï¿½Pï¿½[ï¿½vï¿½ï¿½ï¿½ï¿½B
+		@param  $str_ ï¿½Cï¿½Ó‚Ì•ï¿½ï¿½ï¿½ï¿½ï¿½B
+		@return ï¿½Gï¿½Xï¿½Pï¿½[ï¿½vï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 	*/
 	function SafeString( $str_ )
 	{
@@ -398,17 +438,17 @@
 	}
 
 	/**
-		@brief eî•ñ‚ğŠi”[‚·‚éB
+		@brief ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½iï¿½[ï¿½ï¿½ï¿½ï¿½B
 	*/
 	function SetTierParent()
 	{
 		global $USE_AFFILIATE_BANNER_PARENT;
 		global $PARENT_MAX_ROW;
 
-		if( !$USE_AFFILIATE_BANNER_PARENT ) //eî•ñƒZƒbƒg‹@”\‚ª—LŒø‚Å‚È‚¢ê‡
+		if( !$USE_AFFILIATE_BANNER_PARENT ) //ï¿½eï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½@ï¿½\ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Å‚È‚ï¿½ï¿½ê‡
 			{ return; }
 
-		if( !isset( $_GET[ 'id' ] ) ) //ƒ†[ƒU[ID‚ªw’è‚³‚ê‚Ä‚¢‚éê‡
+		if( !isset( $_GET[ 'id' ] ) ) //ï¿½ï¿½ï¿½[ï¿½Uï¿½[IDï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			{ return; }
 
 		if( '999' != $PARENT_MAX_ROW )
@@ -427,65 +467,65 @@
 	}
 
 	/**
-		@brief ƒGƒ‰[ƒƒO‚ğo—Í‚·‚éB
-		@param $e_ —áŠOƒIƒuƒWƒFƒNƒgB
+		@brief ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½ï¿½B
+		@param $e_ ï¿½ï¿½Oï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function WriteErrorLog( $e_ )
 	{
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 	}
 
-	//¡ƒŠƒ_ƒCƒŒƒNƒg
+	//ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½g
 
 	/**
-		@brief L‚Éİ’è‚³‚ê‚½³‹KURL‚ÖƒŠƒ_ƒCƒŒƒNƒg‚·‚éB
-		@param $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
-		@param $access_  RecordModelƒIƒuƒWƒFƒNƒgB
+		@brief ï¿½Lï¿½ï¿½ï¿½Éİ’è‚³ï¿½ê‚½ï¿½ï¿½ï¿½KURLï¿½Öƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½B
+		@param $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
+		@param $access_  RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function DoRedirect( $adwares_ , $access_ = null )
 	{
 		global $mobile_flag;
 		global $terminal_type;
 
-		if( $adwares_->getData( 'url_users' ) ) //URL‚ªƒ†[ƒU[‚Ì”CˆÓİ’è‚Ìê‡
+		if( $adwares_->getData( 'url_users' ) ) //URLï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½Ì”Cï¿½Óİ’ï¿½Ìê‡
 			{ $url = $_GET[ 'url' ]; }
 
-		if( !$url ) //URl‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		if( !$url ) //URlï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 		{
-			if( $mobile_flag ) //Œg‘Ñ‹@”\‚ª—LŒø‚Å‚ ‚éê‡
+			if( $mobile_flag ) //ï¿½gï¿½Ñ‹@ï¿½\ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ê‡
 			{
-				if( 0 >= $terminal_type ) //PC‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡
+				if( 0 >= $terminal_type ) //PCï¿½ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡
 					$url = $adwares_->getData( 'url' );
-				else //Œg‘Ñ‚©‚ç‚ÌƒAƒNƒZƒX‚Ìê‡
+				else //ï¿½gï¿½Ñ‚ï¿½ï¿½ï¿½ÌƒAï¿½Nï¿½Zï¿½Xï¿½Ìê‡
 				{
 					$url = $adwares_->getData( 'url_m' );
 
-					if( !$url ) //URL‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡
+					if( !$url ) //URLï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 						$url = $adwares_->getData( 'url' );
 				}
 			}
-			else //Œg‘Ñ‹@”\‚ª–³Œø‚Å‚ ‚éê‡
+			else //ï¿½gï¿½Ñ‹@ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ê‡
 				{ $url = $adwares_->getData( 'url' ); }
 		}
 
-		if( !$url ) //URL‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		if( !$url ) //URLï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 			$url = 'index.php';
 
-		if( $access_ ) //ƒAƒNƒZƒXƒf[ƒ^‚ª‘¶İ‚·‚éê‡
+		if( $access_ ) //ï¿½Aï¿½Nï¿½Zï¿½Xï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½ê‡
 		{
-			if( FALSE === strpos( $url , '?' ) ) //URL‚Éƒpƒ‰ƒ[ƒ^‚ª‚ ‚éê‡
+			if( FALSE === strpos( $url , '?' ) ) //URLï¿½Éƒpï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡
 				$url .= '?aid=' . $access_->getID();
-			else //URL‚Éƒpƒ‰ƒ[ƒ^‚ª‚È‚¢ê‡
+			else //URLï¿½Éƒpï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡
 				$url .= '&aid=' . $access_->getID();
 		}
 
 		print '<script>';
 
-		if( $access_ ) //ƒAƒNƒZƒXƒf[ƒ^‚ª‘¶İ‚·‚éê‡
+		if( $access_ ) //ï¿½Aï¿½Nï¿½Zï¿½Xï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½ê‡
 		{
 			if( $access_->getID() )
 				{ print 'localStorage.setItem( "afl_tracking_aid" , "' . $access_->getID() . '" );'; }
@@ -498,7 +538,7 @@
 	}
 
 	/**
-		@brief ƒVƒXƒeƒ€‚Ìƒgƒbƒvƒy[ƒW‚ÖƒŠƒ_ƒCƒŒƒNƒg‚·‚éB
+		@brief ï¿½Vï¿½Xï¿½eï¿½ï¿½ï¿½Ìƒgï¿½bï¿½vï¿½yï¿½[ï¿½Wï¿½Öƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½B
 	*/
 	function DoRedirectToIndex()
 	{
@@ -507,8 +547,8 @@
 	}
 
 	/**
-		@brief L‚Éİ’è‚³‚ê‚½—\ZƒI[ƒo[‚ÌURL‚ÖƒŠƒ_ƒCƒŒƒNƒg‚·‚éB
-		@param $adwares_ RecordModelƒIƒuƒWƒFƒNƒgB
+		@brief ï¿½Lï¿½ï¿½ï¿½Éİ’è‚³ï¿½ê‚½ï¿½\ï¿½Zï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½ï¿½URLï¿½Öƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½B
+		@param $adwares_ RecordModelï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½B
 	*/
 	function DoRedirectToOver( $adwares_ )
 	{
@@ -516,7 +556,7 @@
 
 		$url = $adwares_->getData( 'url_over' );
 
-		if( !$url ) //URL‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡
+		if( !$url ) //URLï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
 			$url = 'index.php';
 
 		header( 'Location: ' . $url );
@@ -524,20 +564,20 @@
 	}
 
 	/**
-		@brief   uid•t‚«URL‚ÖƒŠƒ_ƒCƒŒƒNƒg‚·‚éB
-		@details DoCoMo’[––‚©‚çŒÂ‘Ì¯•Ê”Ô†‚ğæ“¾‚·‚é‚½‚ßAƒNƒGƒŠ‚Éuid‚ª‘¶İ‚µ‚È‚¢ê‡‚Íuid‚ğ•t‰Á‚µ‚ÄƒŠƒ_ƒCƒŒƒNƒg‚µ‚Ü‚·B
+		@brief   uidï¿½tï¿½ï¿½URLï¿½Öƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½B
+		@details DoCoMoï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‘Ìï¿½ï¿½Ê”Ôï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½é‚½ï¿½ßAï¿½Nï¿½Gï¿½ï¿½ï¿½ï¿½uidï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½uidï¿½ï¿½tï¿½ï¿½ï¿½ï¿½ï¿½Äƒï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½gï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 	*/
 	function RequestGUID()
 	{
 		global $terminal_type;
 
-		if( MobileUtil::$TYPE_NUM_DOCOMO != $terminal_type ) //DoCoMo’[––‚Å‚È‚¢ê‡
+		if( MobileUtil::$TYPE_NUM_DOCOMO != $terminal_type ) //DoCoMoï¿½[ï¿½ï¿½ï¿½Å‚È‚ï¿½ï¿½ê‡
 			return;
 
-		if( 'on' == $_GET[ 'guid' ] ) //Šù‚Éguidƒpƒ‰ƒ[ƒ^‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚éê‡
+		if( 'on' == $_GET[ 'guid' ] ) //ï¿½ï¿½ï¿½ï¿½guidï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡
 			return;
 
-		//GETƒpƒ‰ƒ[ƒ^‚ğˆø‚«Œp‚®‚½‚ß‚É•¶š—ñ‰»‚·‚é
+		//GETï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½ß‚É•ï¿½ï¿½ï¿½ï¿½ñ‰»‚ï¿½ï¿½ï¿½
 		$paramStr = '';
 
 		foreach( Array( 'id' , 'adwares' , 's_adwares' , 'url' ) as $key )
@@ -546,7 +586,7 @@
 				$paramStr .= '&' . $key . '=' . $_GET[ $key ];
 		}
 
-		//ƒŠƒ_ƒCƒŒƒNƒg
+		//ï¿½ï¿½ï¿½_ï¿½Cï¿½ï¿½ï¿½Nï¿½g
 		header( 'Location: link.php?guid=on' . $paramStr );
 		exit();
 	}
