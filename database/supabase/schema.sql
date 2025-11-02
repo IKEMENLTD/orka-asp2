@@ -321,6 +321,12 @@ CREATE TABLE IF NOT EXISTS afad_postback_logs (
   ip_address INET,
   user_agent VARCHAR(500),
 
+  -- 成果情報（AFAD仕様パラメータ）
+  conversion_uid VARCHAR(255),
+  conversion_uid2 VARCHAR(255),
+  conversion_amount DECIMAL(15,2) CHECK (conversion_amount IS NULL OR conversion_amount >= 0),
+  conversion_status SMALLINT CHECK (conversion_status IS NULL OR (conversion_status >= 1 AND conversion_status <= 3)),
+
   -- タイムスタンプ
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -336,6 +342,15 @@ CREATE INDEX idx_afad_logs_created_at ON afad_postback_logs(created_at DESC);
 
 -- JSONBインデックス
 CREATE INDEX idx_afad_logs_request_params ON afad_postback_logs USING GIN(request_params);
+
+-- 成果情報インデックス（検索性能向上）
+CREATE INDEX idx_afad_logs_conversion_uid ON afad_postback_logs(conversion_uid) WHERE conversion_uid IS NOT NULL;
+CREATE INDEX idx_afad_logs_conversion_uid2 ON afad_postback_logs(conversion_uid2) WHERE conversion_uid2 IS NOT NULL;
+CREATE INDEX idx_afad_logs_conversion_amount ON afad_postback_logs(conversion_amount) WHERE conversion_amount IS NOT NULL;
+CREATE INDEX idx_afad_logs_conversion_status ON afad_postback_logs(conversion_status) WHERE conversion_status IS NOT NULL;
+CREATE INDEX idx_afad_logs_adwares_amount ON afad_postback_logs(adwares_id, conversion_amount DESC) WHERE conversion_amount IS NOT NULL;
+CREATE INDEX idx_afad_logs_date_amount ON afad_postback_logs(created_at DESC, conversion_amount DESC);
+CREATE INDEX idx_afad_logs_status_amount ON afad_postback_logs(conversion_status, conversion_amount DESC) WHERE conversion_status IS NOT NULL;
 
 -- トリガー
 CREATE TRIGGER trigger_afad_logs_updated_at
@@ -359,7 +374,11 @@ ALTER TABLE afad_postback_logs
 -- コメント
 COMMENT ON TABLE afad_postback_logs IS 'AFADポストバック送信ログテーブル。全ての送信履歴を記録。';
 COMMENT ON COLUMN afad_postback_logs.request_params IS 'リクエストパラメータ（JSON形式）';
-COMMENT ON COLUMN afad_postback_logs.execution_time_ms IS 'HTTP���クエスト実行時間（ミリ秒）';
+COMMENT ON COLUMN afad_postback_logs.execution_time_ms IS 'HTTPリクエスト実行時間（ミリ秒）';
+COMMENT ON COLUMN afad_postback_logs.conversion_uid IS 'AFAD uid パラメータ：注文番号、申込み番号、会員IDなど';
+COMMENT ON COLUMN afad_postback_logs.conversion_uid2 IS 'AFAD uid2 パラメータ：サブユーザー識別ID';
+COMMENT ON COLUMN afad_postback_logs.conversion_amount IS 'AFAD amount パラメータ：成果金額または売上合計金額';
+COMMENT ON COLUMN afad_postback_logs.conversion_status IS 'AFAD Status パラメータ：1=承認待ち、2=承認、3=否認';
 
 -- ============================================================================
 -- 4.4 afad_retry_queue テーブル（リトライキュー）
