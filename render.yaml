@@ -1,0 +1,63 @@
+services:
+  # Web Service (PHP Application)
+  - type: web
+    name: orka-asp2
+    runtime: php
+    plan: starter  # free, starter, standard, pro
+    region: singapore  # Tokyo region not available, Singapore is closest
+    buildCommand: |
+      # Install PHP dependencies if composer.json exists
+      if [ -f composer.json ]; then
+        composer install --no-dev --optimize-autoloader
+      fi
+      # Create necessary directories
+      mkdir -p custom
+      mkdir -p tdb
+      mkdir -p lst/indexs
+      mkdir -p w3c
+      # Set permissions
+      chmod -R 755 .
+    startCommand: |
+      # Start PHP built-in server for Render
+      php -S 0.0.0.0:${PORT:-10000} -t .
+    envVars:
+      - key: PHP_VERSION
+        value: "8.1"
+      - key: SQL_MASTER
+        value: PostgreSQLDatabase
+      - key: SQL_SERVER
+        sync: false  # Set in Render Dashboard
+      - key: SQL_PORT
+        value: "5432"
+      - key: DB_NAME
+        value: postgres
+      - key: SQL_ID
+        sync: false  # Set in Render Dashboard
+      - key: SQL_PASS
+        sync: false  # Set in Render Dashboard (use DATABASE_URL from PostgreSQL service)
+      - key: AFAD_POSTBACK_ENABLED
+        value: "true"
+      - key: AFAD_LOG_ENABLED
+        value: "true"
+      - key: AFAD_LOG_PATH
+        value: "./lst/afad_logs"
+      - key: TZ
+        value: Asia/Tokyo
+    # Health check endpoint
+    healthCheckPath: /
+    # Auto-deploy on push to this branch
+    branch: claude/afad-socket-integration-design-011CUiqQgSf1NTHhTHEVekon
+    # Autoscaling (optional, for paid plans)
+    # numInstances: 1
+
+# Note: For database, you can either:
+# 1. Use your existing Supabase PostgreSQL (recommended)
+# 2. Create a new PostgreSQL database in Render (uncomment below)
+
+# databases:
+#   - name: orka-db
+#     plan: starter  # free tier available
+#     databaseName: orka_asp2
+#     user: orka_user
+#     region: singapore
+#     ipAllowList: []  # Allow all IPs
