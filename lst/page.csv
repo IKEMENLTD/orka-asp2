@@ -1,0 +1,5 @@
+id,char,6,,Const,
+name,varchar,128,Null,Null/AdminData,/^[\d\w]*$/
+authority,varchar,128,Null,Null/AdminData,
+open,boolean,,Null,Null/AdminData,
+regist,timestamp,,,Const,

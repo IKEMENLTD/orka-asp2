@@ -1,0 +1,5 @@
+id,char,8,,Const,
+owner,char,8,,Const,
+mail,varchar,128,Null/Mail/MailDup,Null/Mail/MailDup/Const,
+message,string,,,Const,
+regist,timestamp,,,Const,

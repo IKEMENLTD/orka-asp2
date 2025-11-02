@@ -1,0 +1,11 @@
+<script src="js/messaging.js"></script>
+<script>
+	dispatchMessage(
+		function(){
+			var $data = localStorage.getItem( 'afl_tracking_aid' );
+
+			localStorage.removeItem( 'afl_tracking_aid' );
+			return $data;
+		}
+	);
+</script>

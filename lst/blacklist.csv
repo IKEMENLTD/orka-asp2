@@ -1,0 +1,4 @@
+id,char,32,,Const
+blacklist_mode,varchar,32
+blacklist_value,varchar,255,Null,Null
+memo,varchar,255,,

@@ -1,0 +1,9 @@
+0,,Txxxx,/nobody/nUser/cUser/admin/,Exception,15,3,EXCEPTION_DESIGN,exception/Exception.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,InvalidQueryException,15,3,EXCEPTION_DESIGN,exception/InvalidQueryException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,IllegalAccessException,15,3,EXCEPTION_DESIGN,exception/IllegalAccessException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,FileIOException,15,3,EXCEPTION_DESIGN,exception/FileIOException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,UpdateFailedException,15,3,EXCEPTION_DESIGN,exception/UpdateFailedException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,OutputFailedException,15,3,EXCEPTION_DESIGN,exception/OutputFailedException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,RuntimeException,15,3,EXCEPTION_DESIGN,exception/RuntimeException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,InvalidArgumentException,15,3,EXCEPTION_DESIGN,exception/InvalidArgumentException.html,0
+0,,Txxxx,/nobody/nUser/cUser/admin/,InvalidCCArgumentException,15,3,EXCEPTION_DESIGN,exception/InvalidCCArgumentException.html,0

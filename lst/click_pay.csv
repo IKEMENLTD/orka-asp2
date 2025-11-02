@@ -1,0 +1,12 @@
+id,char,32,,Const,
+access_id,char,32,,Const,
+owner,char,8,,Null/AdminData,
+adwares_type,varchar,32,,Null/AdminData,
+adwares,char,8,,Null/AdminData,
+cost,int,,,AdminData,
+tier1_rate,int,,,AdminData,/^[\d]*$/
+tier2_rate,int,,,AdminData,/^[\d]*$/
+tier3_rate,int,,,AdminData,/^[\d]*$/
+state,varchar,10,,AdminData,
+is_notice,boolean,,,Const,
+regist,timestamp,,,Const,

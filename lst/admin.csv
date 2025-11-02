@@ -1,0 +1,9 @@
+id,char,5,,Const
+name,varchar,128,,AdminData
+mail,varchar,255,Null/Mail,Null/Mail/AdminData
+pass,varchar,128,Null/ChangeFlag:ConfirmInput:pass_confirm,Null/ChangeFlag:ConfirmInput:pass_confirm/AdminData
+activate,int,,,Const
+logout,timestamp,,,Const
+login,timestamp,,,Const
+old_login,timestamp,,,Const
+mail_time,timestamp,,,Const

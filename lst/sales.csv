@@ -1,0 +1,5 @@
+id,char,4,,Const
+name,varchar,8,Null,Null/AdminData
+rate,int,,Null,Null/AdminData
+lot,int,,Null,Null/AdminData
+sales,int,,Null,Null/AdminData

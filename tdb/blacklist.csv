@@ -1,0 +1,2 @@
+1,,1,user_agent,googlebot,"Googleのweb検索用botを指定する例です。UAに「googlebot」が含まれるすべてのアクセスを制限します。
+※GooglebotはIP範囲を公開していないので、IP指定による制限はできません。"

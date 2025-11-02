@@ -1,0 +1,8 @@
+id,char,5,Null,Null/Const,
+name_kana,varchar,128,,Const,/^(\x83[\x40-\x96]|\x81[\x52\x53\x5b])+$/
+bank_code,varchar,4,Null,Null/AdminData,/^\d{4}$/
+bank_name_kana,varchar,32,,Const,/^(\x83[\x40-\x96]|\x81[\x52\x53\x5b])+$/
+branch_code,varchar,3,Null,Null/AdminData,/^\d{3}$/
+branch_name_kana,varchar,32,,Const,/^(\x83[\x40-\x96]|\x81[\x52\x53\x5b])+$/
+bank_type,varchar,1,Null,Null/AdminData,
+number,varchar,7,Null,Null/AdminData,/^\d{7}$/

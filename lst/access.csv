@@ -1,0 +1,11 @@
+id,char,32,,Const
+ipaddress,varchar,16,,Const
+cookie,varchar,32,,Const
+adwares_type,char,32,,Const
+adwares,char,8,,Const
+owner,char,8,,Const
+useragent,string,,,Const
+referer,string,,,Const
+state,int,,,Const
+utn,varchar,128,,Const
+regist,timestamp,,,Const

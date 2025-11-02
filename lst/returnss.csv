@@ -1,0 +1,5 @@
+id,string,,,Const,
+owner,char,8,,Const,
+cost,int,,Null,Null/AdminData,/^[\d]*$/
+state,varchar,16,,AdminData,
+regist,timestamp,,,Const,

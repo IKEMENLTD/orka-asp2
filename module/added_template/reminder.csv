@@ -1,0 +1,5 @@
+0,,xxxx,/reminder/,nUser,15,3,SEND_FORM_DESIGN,module/reminder/nUser/EmailSend.html,0
+1,,xxxx,/reminder/,nUser,15,3,SEND_COMP_DESIGN,module/reminder/nUser/EmailSendComp.html,0
+2,,xxxx,/reminder/,nUser,15,3,SEND_CHECK_DESIGN,module/reminder/nUser/EmailSendCheck.html,0
+3,,xxxx,/reminder/,nUser,15,3,SEND_FALED_DESIGN,module/reminder/nUser/EmailSendFailed.html,0
+4,,xxxx,/reminder/,nUser,15,3,SEND_MAIL,module/reminder/nUser/mail_contents/reminder.txt,0

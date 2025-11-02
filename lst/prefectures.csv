@@ -1,0 +1,4 @@
+id,char,4,,Const,
+area_id,char,6,,Const,
+name,varchar,16,,Const,
+name_kana,varchar,16,,Const,

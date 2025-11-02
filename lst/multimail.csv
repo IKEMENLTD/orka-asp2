@@ -1,0 +1,4 @@
+id,char,8,,Const
+sub,varchar,128,Null,Null/Const
+main,string,,Null,Null/Const
+receive_id,string,,,Const

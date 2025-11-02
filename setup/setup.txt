@@ -1,0 +1,182 @@
+<table>
+	name		= admin;
+	userData	= true;
+	idHeader	= ADMIN;
+	index		= all-6-admin;
+	edit		= all-6-admin;
+	/editComp   = all-6-admin(base/*);
+
+	name			= nUser;
+	userData		= true;
+	idHeader		= N;
+	index			= all-2-nUser(LoginNotActive);all-4-nUser;all-8-nUser(LoginDeny);
+	regist			= all-15-nobody;
+	edit			= self-6-nUser;all-6-admin(*Admin);
+	/editComp		= self-6-nUser(base/*);all-6-admin(base/*);
+	/registError	= all-6-admin;
+	delete			= self-6-nUser;all-6-admin;
+	/deleteComp		= self-6-nUser(base/User*);all-6-admin(base/User*);
+	search			= all-6-admin(*Admin);
+	/searchFaled	= all-6-admin;
+	/searchList		= all-6-admin;
+	info			= all-6-admin(*Admin);
+
+	name		= adwares;
+	idHeader	= A;
+	regist		= all-6-admin;
+	edit		= all-4-owner;all-6-admin;
+	/editComp	= all-4-owner(base/*);all-6-admin(base/*);
+	delete		= all-4-owner;all-6-admin;
+	/deleteComp	= all-4-owner(base/User*);all-6-admin(base/User*);
+	search		= all-4-nUser;all-6-admin;
+	/searchList	= all-6-admin(*Admin);
+	info		= all-4-nUser;
+
+	name			= category;
+	idHeader		= CT;
+	regist			= all-6-admin;
+	edit			= all-6-admin;
+	/editComp		= all-6-admin(base/*);
+	delete			= all-6-admin;
+	/deleteComp		= all-6-admin(base/*);
+	search			= all-6-admin(*Admin);
+	/searchResult	= all-6-admin(SearchResultAdminFormat);
+	/searchFaled	= all-6-admin;
+
+	name			= access;
+	idHeader		= AC;
+	search			= all-4-nUser;all-6-admin;
+	/searchResult	= all-4-nUser;all-6-admin(SearchResultAdminFormat);
+	/searchFaled	= all-4-nUser;all-6-admin;
+	/searchList		= all-4-nUser;all-6-admin(*Admin);
+
+	name			= pay;
+	idHeader		= P;
+	search			= all-4-nUser;all-6-admin;
+	/searchResult	= all-4-nUser;all-6-admin(SearchResultAdminFormat);
+	/searchFaled	= all-4-nUser;all-6-admin(*Admin);
+	/searchList		= all-4-nUser;all-6-admin(*Admin);
+
+	name			= click_pay;
+	idHeader		= CP;
+	idLength		= 9;
+	search			= all-4-nUser;all-6-admin;
+	/searchResult	= all-4-nUser;all-6-admin(SearchResultAdminFormat);
+	/searchFaled	= all-4-nUser;all-6-admin(*Admin);
+	/searchList		= all-4-nUser;all-6-admin(*Admin);
+
+	name			= returnss;
+	idHeader		= R;
+	regist			= all-4-nUser;
+	search			= all-4-nUser;all-6-admin(*Admin);
+	/searchResult	= all-6-admin(SearchResultAdminFormat);
+	/searchFaled	= all-6-admin;
+
+	name		= prefectures;
+	idHeader	= PF;
+	idLength	= 4;
+
+	name		= area;
+	idHeader	= AREA;
+	idLength	= 6;
+
+	name			= sales;
+	idHeader		= SA;
+	idLength		= 4;
+	regist			= all-6-admin;
+	/registComp		= all-6-admin(base/*);
+	edit			= all-6-admin;
+	/editComp		= all-6-admin(base/*);
+	delete			= all-6-admin;
+	/deleteComp		= all-6-admin(base/*);
+	search			= all-6-admin(*Admin);
+	/searchFaled	= all-6-admin;
+
+	name		= multimail;
+	idHeader	= MM;
+	regist		= all-6-admin;
+	/regist		= all-6-notFound(notFound);
+
+	name		= template;
+	idHeader	= T;
+	idLength	= 5;
+
+	name		= system;
+	idHeader	= ;
+	idLength	= 0;
+	edit		= all-6-admin;
+</table>
+
+<label>
+	ERROR_PAGE_DESIGN          = base/Error.html
+	ACTIVATE_FALED_DESIGN_HTML = base/ActivateFaled.html
+	REGIST_FALED_DESIGN        = base/RegistFaled.html
+</label>
+
+<label>
+	ACTIVATE_MAIL      = mail_contents/activate.txt
+	ACTIVATE_COMP_MAIL = mail_contents/activatecomp.txt
+	REGIST_COMP_MAIL   = mail_contents/registcomp.txt
+</label>
+
+<csv>
+	1,,XXXX,/nobody/,,15,3,LOGIN_PAGE_DESIGN,base/Index.html,0
+	2,,XXXX,/nobody/admin/nUser/,,15,3,LOGIN_FALED_DESIGN,base/LoginFaled.html,0
+	3,,XXXX,/nobody/admin/nUser/,,15,3,FOOT_DESIGN,base/Foot.html,0
+	4,,XXXX,/nobody/admin/nUser/,,15,3,HEAD_DESIGN,base/Head.html,0
+	5,,XXXX,/nobody/,,15,3,TOP_PAGE_DESIGN,base/Index.html,0
+	6,,XXXX,/admin/nUser/,,15,3,ACTIVATE_DESIGN_HTML,base/Activate.html,0
+	7,,XXXX,/admin/nUser/,,15,3,SEARCH_PAGE_CHANGE_DESIGN,base/SearchPageChange.html,0
+</csv>
+
+<csv>
+	1,,XXXX,/nUser/admin/nobody/,login,15,3,QUICK_FALED_DESIGN,quick/LoginFaled.html,0
+	2,,XXXX,/nUser/admin/nobody/,set,15,3,QUICK_FALED_DESIGN,quick/SetFaled.html,0
+	3,,XXXX,/nUser/,nUser,6,3,QUICK_DESIGN,quick/SetNUser.html,0
+</csv>
+
+<csv>
+	1,,XXXX,/nUser/admin/nobody/,drawMailLink,15,3,EXTENSION_PART_DESIGN,extension/Friends_mail_link.html,0
+	2,,XXXX,//,standard,15,3,CSS_LINK_LIST,css/base.css,0
+	3,,XXXX,/nUser/,returnss,6,3,ADWARES_EXCHANGE,returnss/Faled.html,0
+</csv>
+
+<csv>
+	1,,XXXX,/nobody/,head,15,3,INCLUDE_DESIGN,include/HeadNobody.html,0
+	2,,XXXX,/admin/,head,15,3,INCLUDE_DESIGN,include/HeadAdmin.html,0
+	3,,XXXX,/nUser/,head,4,3,INCLUDE_DESIGN,include/HeadNLogin.html,0
+	4,,XXXX,/nUser/,head,10,3,INCLUDE_DESIGN,include/HeadLoginDeny.html,0
+	7,,XXXX,/nobody/,side_bar,15,3,INCLUDE_DESIGN,include/Side_barNobody.html,0
+	8,,XXXX,/admin/,side_bar,15,3,INCLUDE_DESIGN,include/Side_barAdmin.html,0
+	9,,XXXX,/nUser/,side_bar,15,3,INCLUDE_DESIGN,include/Side_barNUser.html,0
+</csv>
+
+
+<conf>
+	$FORM_TAG_DRAW_FLAG	 							 = 'buffer';
+
+	$ADWARES_LIMIT_TYPE_NONE = 0;
+	$ADWARES_LIMIT_TYPE_YEN = 1;
+	$ADWARES_LIMIT_TYPE_CNT = 2;
+	$ADWARES_LIMIT_TYPE_CNT_CLICK = 3;
+
+	$ADWARES_MONEY_TYPE_YEN = "yen";
+	$ADWARES_MONEY_TYPE_PER = "per";
+	$ADWARES_MONEY_TYPE_RANK = "rank";
+	$ADWARES_MONEY_TYPE_PERSONAL = "personal";
+
+	$ADWARES_AUTO_ON = 1;
+	$ADWARES_AUTO_OFF = 0;
+
+	$i_mode_id = true;
+
+	$terminal_type = 0;
+	$sid = "";
+
+	$multimail_send_user['admin'] = true;
+
+	$js_file_paths['all']['selectboxes'] = './js/jquery.selectboxes.js';
+	$js_file_paths['all']['lightbox'] = './js/jquery.lightbox.js';
+
+	$css_file_paths['all']['lightbox'] = './template/css/jquery.lightbox.css';
+</conf>
