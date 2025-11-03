@@ -25,6 +25,7 @@ spl_autoload_register(function ($class_name) {
         'Mail' => __DIR__ . '/Mail.php',
         'PathUtil' => __DIR__ . '/PathUtil.php',
         'MobileUtil' => __DIR__ . '/MobileUtil.php',
+        'command_base' => __DIR__ . '/command_base.php',
     ];
 
     if (isset($class_files[$class_name]) && file_exists($class_files[$class_name])) {
