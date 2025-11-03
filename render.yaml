@@ -1,25 +1,12 @@
 services:
-  # Web Service (PHP Application)
+  # Web Service (PHP Application using Docker)
   - type: web
     name: orka-asp2
-    runtime: php
+    runtime: docker
     plan: starter  # free, starter, standard, pro
     region: singapore  # Tokyo region not available, Singapore is closest
-    buildCommand: |
-      # Install PHP dependencies if composer.json exists
-      if [ -f composer.json ]; then
-        composer install --no-dev --optimize-autoloader
-      fi
-      # Create necessary directories
-      mkdir -p custom
-      mkdir -p tdb
-      mkdir -p lst/indexs
-      mkdir -p w3c
-      # Set permissions
-      chmod -R 755 .
-    startCommand: |
-      # Start PHP built-in server for Render
-      php -S 0.0.0.0:${PORT:-10000} -t .
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     envVars:
       - key: PHP_VERSION
         value: "8.1"

@@ -1,0 +1,48 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+README.md
+
+# Environment files
+.env
+.env.example
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files (will be created at runtime)
+*.log
+lst/afad_logs/*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node modules (if any)
+node_modules/
+
+# Composer vendor (if exists, uncomment if needed)
+# vendor/
+
+# Database files (local development only)
+*.db
+*.sqlite
+
+# Test files
+tests/
+phpunit.xml
