@@ -16,6 +16,7 @@ spl_autoload_register(function ($class_name) {
         'System' => __DIR__ . '/System.php',
         'Template' => __DIR__ . '/Template.php',
         'SystemUtil' => __DIR__ . '/SystemUtil.php',
+        'SystemObject' => __DIR__ . '/SystemObject.php',
         'ConceptCheck' => __DIR__ . '/ConceptCheck.php',
         'ErrorManager' => __DIR__ . '/ErrorManager.php',
         'ExceptionManager' => __DIR__ . '/ExceptionManager.php',
@@ -49,6 +50,40 @@ class PathUtil {
 
 // Basic ConceptCheck class
 class ConceptCheck {
+    /**
+     * Check if specified keys exist in array
+     * @param array $array - array to check
+     * @param array $keys - keys that must exist
+     * @throws InvalidArgumentException if key doesn't exist
+     */
+    public static function IsEssential($array, $keys) {
+        foreach ($keys as $key) {
+            if (!isset($array[$key]) && !array_key_exists($key, $array)) {
+                throw new InvalidArgumentException("Required parameter missing: {$key}");
+            }
+        }
+    }
+
+    /**
+     * Check if specified keys are not null
+     * @param array $array - array to check
+     * @param array $keys - keys that must not be null
+     * @throws InvalidArgumentException if value is null
+     */
+    public static function IsNotNull($array, $keys) {
+        foreach ($keys as $key) {
+            if (isset($array[$key]) && is_null($array[$key])) {
+                throw new InvalidArgumentException("Parameter cannot be null: {$key}");
+            }
+        }
+    }
+
+    /**
+     * Check if specified keys are scalar values
+     * @param array $array - array to check
+     * @param array $keys - keys that must be scalar
+     * @throws InvalidArgumentException if value is not scalar
+     */
     public static function IsScalar($array, $keys) {
         foreach ($keys as $key) {
             if (isset($array[$key]) && !is_scalar($array[$key])) {
