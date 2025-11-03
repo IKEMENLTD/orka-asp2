@@ -696,7 +696,8 @@ function RecordAFADPostback($accessId, $afadConfigId, $adwaresId, $sessionId, $p
         $status = 'pending';
         if ($result['success']) {
             $status = 'success';
-        } elseif ($result['curl_errno'] == CURLE_OPERATION_TIMEDOUT || $result['curl_errno'] == CURLE_TIMEOUT) {
+        } elseif ($result['curl_errno'] == CURLE_OPERATION_TIMEOUTED || $result['curl_errno'] == 28) {
+            // CURLE_OPERATION_TIMEOUTED = 28 (タイムアウト)
             $status = 'timeout';
         } else {
             $status = 'failed';
@@ -807,7 +808,7 @@ function UpdateAccessAFADStatus($accessId, $success, $result)
     try {
         $pdo = GetAFADDatabaseConnection();
 
-        $status = $success ? 'success' : ($result['curl_errno'] == CURLE_OPERATION_TIMEDOUT ? 'timeout' : 'failed');
+        $status = $success ? 'success' : ($result['curl_errno'] == 28 ? 'timeout' : 'failed');
 
         $sql = "
             UPDATE access
