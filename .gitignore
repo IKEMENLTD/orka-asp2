@@ -1,0 +1,61 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# Database configuration (use conf.php.sample instead)
+custom/conf.php
+
+# Logs
+*.log
+lst/afad_logs/*
+!lst/afad_logs/.gitkeep
+/var/log/php/*
+
+# Session files
+sessions/*
+
+# Temporary files
+tmp/*
+temp/*
+*.tmp
+
+# Database files (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+cache/*
+*.cache
+
+# Uploaded files (if any)
+uploads/*
+!uploads/.gitkeep
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Composer
+/vendor/
+composer.phar
+
+# System files
+Thumbs.db
+.directory
+
+# CSV data files (may contain sensitive data)
+tdb/*.csv
+!tdb/.gitkeep
+
+# Access logs
+access_log
+error_log
+
+# PHP-specific
+.phpunit.result.cache

@@ -1,0 +1,40 @@
+<?php
+/**
+ * orka-asp2 Database Configuration
+ *
+ * This file should be copied to custom/conf.php and configured with your database credentials.
+ * For Render deployment, environment variables will be used instead.
+ */
+
+// Database Configuration
+// Use environment variables if available, otherwise use defaults
+$SQL_MASTER = getenv('SQL_MASTER') ?: 'PostgreSQLDatabase';  // PostgreSQLDatabase or SQLiteDatabase
+$SQL_SERVER = getenv('SQL_SERVER') ?: 'db.your-project.supabase.co';
+$SQL_PORT   = getenv('SQL_PORT') ?: '5432';
+$DB_NAME    = getenv('DB_NAME') ?: 'postgres';
+$SQL_ID     = getenv('SQL_ID') ?: 'postgres';
+$SQL_PASS   = getenv('SQL_PASS') ?: 'your-password';
+
+// AFAD Configuration
+define('AFAD_POSTBACK_ENABLED', getenv('AFAD_POSTBACK_ENABLED') === 'true');
+define('AFAD_LOG_ENABLED', getenv('AFAD_LOG_ENABLED') === 'true');
+define('AFAD_LOG_PATH', getenv('AFAD_LOG_PATH') ?: './lst/afad_logs');
+
+// Application Settings
+date_default_timezone_set(getenv('TZ') ?: 'Asia/Tokyo');
+
+// Error Reporting
+if (getenv('DISPLAY_ERRORS') !== false) {
+    ini_set('display_errors', getenv('DISPLAY_ERRORS'));
+}
+if (getenv('LOG_ERRORS') !== false) {
+    ini_set('log_errors', getenv('LOG_ERRORS'));
+}
+
+// Session Security Settings
+if (getenv('SESSION_COOKIE_SECURE') !== false) {
+    ini_set('session.cookie_secure', getenv('SESSION_COOKIE_SECURE'));
+}
+if (getenv('SESSION_COOKIE_HTTPONLY') !== false) {
+    ini_set('session.cookie_httponly', getenv('SESSION_COOKIE_HTTPONLY'));
+}
