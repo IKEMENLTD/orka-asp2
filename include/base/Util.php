@@ -22,6 +22,8 @@ spl_autoload_register(function ($class_name) {
         'CSV' => __DIR__ . '/CSV.php',
         'GMList' => __DIR__ . '/GMList.php',
         'Draw' => __DIR__ . '/Draw.php',
+        'Icon' => __DIR__ . '/Icon.php',
+        'AFADDraw' => __DIR__ . '/AFADDraw.php',
         'Mail' => __DIR__ . '/Mail.php',
         'PathUtil' => __DIR__ . '/PathUtil.php',
         'MobileUtil' => __DIR__ . '/MobileUtil.php',

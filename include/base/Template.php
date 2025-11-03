@@ -69,6 +69,10 @@ class Template {
                 self::renderPasswordResetComplete($gm);
                 break;
 
+            case 'PASSWORD_RESET_FALED_DESIGN':
+                self::renderPasswordResetFailed($gm, $param);
+                break;
+
             case 'QUICK_DESIGN':
                 self::renderQuickLogin($gm, $rec, $loginUserType);
                 break;
@@ -407,6 +411,31 @@ class Template {
     }
 
     /**
+     * Password Reset Failed
+     */
+    private static function renderPasswordResetFailed($gm, $errorType) {
+        $errorMessages = [
+            'find' => 'トークンが見つかりません。',
+            'password' => 'パスワードが一致しません。',
+            'head' => '',
+            'foot' => ''
+        ];
+
+        $message = $errorMessages[$errorType] ?? 'パスワード再設定に失敗しました。';
+
+        echo '<div class="login-page">';
+        echo '<div class="login-card">';
+        echo '<div class="alert alert-error">';
+        echo Icon::get('error', '', 24);
+        echo ' <span class="alert-title">パスワード再設定失敗</span>';
+        echo '<p>' . htmlspecialchars($message) . '</p>';
+        echo '</div>';
+        echo '<a href="/reminder.php" class="btn btn-primary btn-block">再試行</a>';
+        echo '</div>';
+        echo '</div>';
+    }
+
+    /**
      * Quick Login
      */
     private static function renderQuickLogin($gm, $rec, $loginUserType) {
@@ -490,6 +519,29 @@ class Template {
         // Return template string for mail/other purposes
         // This is a stub - implement based on your template system
         return "Template: {$templateType}";
+    }
+
+    /**
+     * Get Template String (for dynamic template parts)
+     */
+    public static function getTemplateString($gm, $rec, $type, $rank, $param, $templateType, $encode = false, $data = null, $section = null) {
+        // This method is used by reminder.php to get template parts
+        // Return empty string for head/foot sections in PASSWORD_RESET_FALED_DESIGN
+        if ($templateType === 'PASSWORD_RESET_FALED_DESIGN') {
+            if ($section === 'head' || $section === 'foot') {
+                return '';
+            }
+
+            $errorMessages = [
+                'find' => 'トークンが見つかりません。',
+                'password' => 'パスワードが一致しません。'
+            ];
+
+            $message = $errorMessages[$section] ?? 'エラーが発生しました。';
+            return '<p>' . htmlspecialchars($message) . '</p>';
+        }
+
+        return '';
     }
 }
 ?>

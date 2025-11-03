@@ -407,17 +407,6 @@ button {
   }
 }
 
-/* Mobile layout - hide sidebar by default */
-@media (max-width: 767px) {
-  .app-layout {
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
-    grid-template-columns: 1fr;
-  }
-}
-
 .app-header {
   grid-area: header;
   background: var(--bg-primary);
@@ -2285,6 +2274,15 @@ button {
 
 /* Mobile-specific styles (max 767px) */
 @media (max-width: 767px) {
+  /* Layout - Single column */
+  .app-layout {
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+    grid-template-columns: 1fr;
+  }
+
   /* Sidebar - Hidden by default, shown as overlay when .is-open */
   .app-sidebar {
     display: none;
