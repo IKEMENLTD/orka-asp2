@@ -4,8 +4,13 @@
  * Minimal implementation to allow the application to start
  */
 
+// Debug logging
+error_log("=== Util.php: Registering autoloader ===");
+
 // Autoload function for missing classes
 spl_autoload_register(function ($class_name) {
+    error_log("Autoloader triggered for class: $class_name");
+
     $class_files = [
         'SQLConnect' => __DIR__ . '/SQLConnect.php',
         'System' => __DIR__ . '/System.php',
@@ -23,7 +28,12 @@ spl_autoload_register(function ($class_name) {
     ];
 
     if (isset($class_files[$class_name]) && file_exists($class_files[$class_name])) {
+        error_log("Autoloading $class_name from: " . $class_files[$class_name]);
+        error_log("Class exists before include: " . (class_exists($class_name, false) ? 'YES' : 'NO'));
         include_once $class_files[$class_name];
+        error_log("Class exists after include: " . (class_exists($class_name, false) ? 'YES' : 'NO'));
+    } else {
+        error_log("Class file not found for: $class_name");
     }
 });
 

@@ -5,9 +5,14 @@
  * It sets up the environment, includes necessary files, and defines common functions
  */
 
+// Debug logging
+error_log("=== head_main.php START ===");
+error_log("head_main.php included from: " . (__FILE__));
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    error_log("Session started in head_main.php");
 }
 
 // Set error reporting based on environment
@@ -20,15 +25,29 @@ if (getenv('DISPLAY_ERRORS') === '1' || getenv('DEBUG_MODE') === 'true') {
 }
 
 // Include base utility files
+error_log("Including Util.php from: " . dirname(__DIR__) . '/include/base/Util.php');
 include_once dirname(__DIR__) . '/include/base/Util.php';
+error_log("Util.php included successfully");
 
 // Include custom configuration files
+error_log("Including conf.php");
 include_once __DIR__ . '/conf.php';
+error_log("conf.php included successfully");
+
+error_log("Including global.php");
 include_once __DIR__ . '/global.php';
+error_log("global.php included successfully");
+
+error_log("Including moduleConf.php");
 include_once __DIR__ . '/extends/moduleConf.php';
+error_log("moduleConf.php included successfully");
 
 // Include module files
+error_log("Including module.inc from: " . dirname(__DIR__) . '/module/module.inc');
 include_once dirname(__DIR__) . '/module/module.inc';
+error_log("module.inc included successfully");
+
+error_log("=== head_main.php END ===");
 
 /**
  * Friend Proc Function
