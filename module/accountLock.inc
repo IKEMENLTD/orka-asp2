@@ -45,7 +45,7 @@
 			@brief  このクラスが処理するテーブル名を取得する。
 			@return テーブル名。
 		*/
-		function getType() //
+		static function getType() //
 			{ return 'accountLock'; }
 
 		/**
@@ -58,7 +58,7 @@
 			           アカウントロックの対象外のユーザー種別であっても、該当するログインIDであれば値を返します。
 			@remarks   この関数から非ユーザーテーブルのユーザー種別が返ることはありません。
 		*/
-		function getUserType( $iLoginID_ ) //
+		static function getUserType( $iLoginID_ ) //
 		{
 			if( !$iLoginID_ ) //ログインIDが空の場合
 				{ throw new InvalidArgumentException( '引数 $iLoginID_ は無効です' ); }
@@ -92,7 +92,7 @@
 			@retval true  規制条件を超えている場合。
 			@retval false 規制条件を超えていない、またはログインIDが送信されていない場合。
 		*/
-		function isTryOver() //
+		static function isTryOver() //
 		{
 			global $LOGIN_KEY_FORM_NAME;
 
@@ -146,7 +146,7 @@
 		/**
 			@brief ログイントライ履歴を更新する。
 		*/
-		function addTryCount() //
+		static function addTryCount() //
 		{
 			global $LOGIN_KEY_FORM_NAME;
 
@@ -214,7 +214,7 @@
 		/**
 			@brief ログイントライ履歴を初期化する。
 		*/
-		function resetTryCount() //
+		static function resetTryCount() //
 		{
 			global $LOGIN_KEY_FORM_NAME;
 
@@ -254,7 +254,7 @@
 			@brief  このクラスが処理するテーブル名を取得する。
 			@return テーブル名。
 		*/
-		function getType() //
+		static function getType() //
 			{ return 'accountLockConfig'; }
 
 		/**
@@ -264,7 +264,7 @@
 			@retval    true  ユーザーがアカウントロックを使用する場合。
 			@retval    false ユーザーがアカウントロックを使用しない、または設定が見つからない場合。
 		*/
-		function isValidUserType( $iUserType_ ) //
+		static function isValidUserType( $iUserType_ ) //
 		{
 			if( !$iUserType_ ) //ユーザー種別が空の場合
 				{ throw new InvalidArgumentException( '引数 $iUserType_ は無効です' ); }
@@ -290,7 +290,7 @@
 			@param[in] $iUserType_ ユーザー種別。
 			@return    該当ユーザー種別に対するアカウントロック設定。
 		*/
-		function getConfigRec( $iUserType_ ) //
+		static function getConfigRec( $iUserType_ ) //
 		{
 			if( !$iUserType_ ) //ユーザー種別が空の場合
 				{ throw new InvalidArgumentException( '引数 $iUserType_ は無効です' ); }
