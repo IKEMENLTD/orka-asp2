@@ -268,38 +268,8 @@
 	function AddAccess( $adwares_ )
 	{
 		global $ACTIVE_NONE;
-		global $CONFIG_AFAD_ENABLE;
 
 		$cookieID = GetCookieID();
-
-		// AFAD連携: セッションIDを取得・検証
-		$afadSessionId = null;
-		$afadConfigId = null;
-
-		if ($CONFIG_AFAD_ENABLE) {
-			try {
-				// AFAD設定を取得
-				$afadConfig = GetAFADConfig($adwares_->getID());
-
-				if ($afadConfig && $afadConfig['enabled']) {
-					$afadConfigId = $afadConfig['id'];
-					$paramName = $afadConfig['parameter_name'];
-
-					// URLパラメータまたはCookieからセッションIDを取得
-					$afadSessionId = GetAFADSessionId($paramName);
-
-					if ($afadSessionId) {
-						// セッションIDをCookieに保存（フォールバック用）
-						StoreAFADSessionIdToCookie($afadSessionId, $afadConfig['cookie_expire_days'], $paramName);
-					}
-				}
-			} catch (Exception $e) {
-				// AFAD連携のエラーはログに記録するが、メイン処理は継続
-				LogAFADError('AFAD session capture failed', $e->getMessage(), [
-					'adwares_id' => $adwares_->getID()
-				]);
-			}
-		}
 
 		//�A�N�Z�X���R�[�h��o�^����
 		$access = new FactoryModel( 'access' );
@@ -314,13 +284,8 @@
 		$access->setData( 'state'        , $ACTIVE_NONE );
 		$access->setData( 'utn'          , MobileUtil::getMobileID() );
 
-		// AFAD連携: セッションIDと設定IDをアクセスレコードに保存
-		if ($afadSessionId) {
-			$access->setData( 'afad_session_id', $afadSessionId );
-		}
-		if ($afadConfigId) {
-			$access->setData( 'afad_config_id', $afadConfigId );
-		}
+		// AFAD連携: セッションID受け取り処理（設計書6.1節準拠）
+		HandleAFADSession($adwares_, $access);
 
 		$access = $access->register();
 

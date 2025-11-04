@@ -62,9 +62,15 @@ try {
     // 広告レコードを取得
     $adwares = new RecordModel($adwaresType ?: 'adwares', $adwaresId);
 
-    // AFAD連携処理
+    // AFAD連携処理（設計書6.2節準拠）
     if ($CONFIG_AFAD_ENABLE) {
-        ProcessAFADConversion($adwares, $access);
+        $conversion = [
+            'uid' => $_GET['uid'] ?? null,
+            'uid2' => $_GET['uid2'] ?? null,
+            'amount' => isset($_GET['sales']) ? floatval($_GET['sales']) : null,
+            'status' => isset($_GET['status']) ? intval($_GET['status']) : null
+        ];
+        SendAFADPostback($adwares, $access, $conversion);
     }
 
     // 1x1透明GIF画像を出力
@@ -122,101 +128,8 @@ function GetAccessRecord($accessId)
     }
 }
 
-/**
- * AFAD連携: コンバージョンポストバック処理
- *
- * @param RecordModel $adwares 広告情報
- * @param RecordModel $access アクセス情報
- */
-function ProcessAFADConversion($adwares, $access)
-{
-    global $CONFIG_AFAD_ENABLE;
-
-    if (!$CONFIG_AFAD_ENABLE) {
-        return;
-    }
-
-    try {
-        // AFAD設定を取得
-        $afadConfig = GetAFADConfig($adwares->getID());
-
-        if (!$afadConfig || !$afadConfig['enabled']) {
-            LogAFADInfo('AFAD not enabled for this adwares', [
-                'adwares_id' => $adwares->getID()
-            ]);
-            return;
-        }
-
-        // AFADセッションIDを取得
-        $afadSessionId = $access->getData('afad_session_id');
-
-        if (empty($afadSessionId)) {
-            // Cookieからフォールバック取得を試みる
-            $afadSessionId = GetAFADSessionIdFromCookie();
-
-            if (empty($afadSessionId)) {
-                LogAFADInfo('AFAD session ID not found', [
-                    'access_id' => $access->getID(),
-                    'adwares_id' => $adwares->getID()
-                ]);
-                return;
-            }
-        }
-
-        // すでに送信済みかチェック
-        if ($access->getData('afad_postback_sent')) {
-            LogAFADInfo('AFAD postback already sent', [
-                'access_id' => $access->getID()
-            ]);
-            return;
-        }
-
-        // 成果データを準備
-        $conversionData = [
-            'uid' => $_GET['uid'] ?? null,
-            'uid2' => $_GET['uid2'] ?? null,
-            'amount' => isset($_GET['sales']) ? floatval($_GET['sales']) : null,
-            'status' => isset($_GET['status']) ? intval($_GET['status']) : null
-        ];
-
-        // 承認ステータスによるフィルタリング
-        if ($afadConfig['approval_status']) {
-            $conversionStatus = $conversionData['status'] ?? 1; // デフォルトは承認待ち
-
-            if ($conversionStatus != $afadConfig['approval_status']) {
-                LogAFADInfo('Conversion status does not match config', [
-                    'access_id' => $access->getID(),
-                    'conversion_status' => $conversionStatus,
-                    'required_status' => $afadConfig['approval_status']
-                ]);
-                return;
-            }
-        }
-
-        // ポストバックを送信
-        $result = SendAFADPostback(
-            $afadConfig,
-            $afadSessionId,
-            $access->getID(),
-            $conversionData
-        );
-
-        // アクセスレコードを更新
-        UpdateAccessAfterPostback($access, $result);
-
-        LogAFADInfo('AFAD postback sent successfully', [
-            'access_id' => $access->getID(),
-            'afad_session_id' => $afadSessionId,
-            'status' => $result['status']
-        ]);
-
-    } catch (Exception $e) {
-        LogAFADError('AFAD conversion processing failed', $e->getMessage(), [
-            'adwares_id' => $adwares->getID(),
-            'access_id' => $access->getID()
-        ]);
-    }
-}
+// ProcessAFADConversion()関数は削除されました。
+// 設計書準拠のSendAFADPostback()を使用してください（module/afad_postback.inc）
 
 /**
  * ポストバック送信後にアクセスレコードを更新

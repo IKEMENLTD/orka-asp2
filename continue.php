@@ -62,9 +62,35 @@ try {
     // 広告レコードを取得
     $adwares = new RecordModel($adwaresType ?: 'adwares', $adwaresId);
 
-    // AFAD連携処理
+    // AFAD連携処理（設計書6.2節準拠、継続課金対応）
     if ($CONFIG_AFAD_ENABLE) {
-        ProcessAFADContinueConversion($adwares, $access);
+        // 継続課金の場合は月次重複チェック
+        $currentMonth = date('Y-m');
+        $lastPostbackTime = $access->getData('afad_postback_time');
+        $shouldSendPostback = true;
+
+        if ($lastPostbackTime) {
+            $lastMonth = date('Y-m', strtotime($lastPostbackTime));
+            if ($currentMonth === $lastMonth) {
+                LogAFADInfo('AFAD continue postback already sent this month', [
+                    'access_id' => $access->getID(),
+                    'current_month' => $currentMonth,
+                    'last_month' => $lastMonth
+                ]);
+                $shouldSendPostback = false;
+            }
+        }
+
+        // 月次チェックをパスした場合のみ送信
+        if ($shouldSendPostback) {
+            $conversion = [
+                'uid' => $_GET['uid'] ?? null,
+                'uid2' => $_GET['uid2'] ?? null,
+                'amount' => isset($_GET['sales']) ? floatval($_GET['sales']) : null,
+                'status' => isset($_GET['status']) ? intval($_GET['status']) : null
+            ];
+            SendAFADPostback($adwares, $access, $conversion);
+        }
     }
 
     // 1x1透明GIF画像を出力
@@ -122,112 +148,9 @@ function GetContinueAccessRecord($accessId)
     }
 }
 
-/**
- * AFAD連携: 継続課金コンバージョンポストバック処理
- *
- * @param RecordModel $adwares 広告情報
- * @param RecordModel $access アクセス情報
- */
-function ProcessAFADContinueConversion($adwares, $access)
-{
-    global $CONFIG_AFAD_ENABLE;
-
-    if (!$CONFIG_AFAD_ENABLE) {
-        return;
-    }
-
-    try {
-        // AFAD設定を取得
-        $afadConfig = GetAFADConfig($adwares->getID());
-
-        if (!$afadConfig || !$afadConfig['enabled']) {
-            LogAFADInfo('AFAD not enabled for this adwares (continue)', [
-                'adwares_id' => $adwares->getID()
-            ]);
-            return;
-        }
-
-        // AFADセッションIDを取得
-        $afadSessionId = $access->getData('afad_session_id');
-
-        if (empty($afadSessionId)) {
-            // Cookieからフォールバック取得を試みる
-            $afadSessionId = GetAFADSessionIdFromCookie();
-
-            if (empty($afadSessionId)) {
-                LogAFADInfo('AFAD session ID not found (continue)', [
-                    'access_id' => $access->getID(),
-                    'adwares_id' => $adwares->getID()
-                ]);
-                return;
-            }
-        }
-
-        // 継続課金の場合は重複送信を許可（毎月の課金ごとに送信）
-        // ただし、同じ月の重複は防ぐ
-        $currentMonth = date('Y-m');
-        $lastPostbackTime = $access->getData('afad_postback_time');
-
-        if ($lastPostbackTime) {
-            $lastMonth = date('Y-m', strtotime($lastPostbackTime));
-
-            if ($currentMonth === $lastMonth) {
-                LogAFADInfo('AFAD continue postback already sent this month', [
-                    'access_id' => $access->getID(),
-                    'current_month' => $currentMonth,
-                    'last_month' => $lastMonth
-                ]);
-                return;
-            }
-        }
-
-        // 成果データを準備
-        $conversionData = [
-            'uid' => $_GET['uid'] ?? null,
-            'uid2' => $_GET['uid2'] ?? null,
-            'amount' => isset($_GET['sales']) ? floatval($_GET['sales']) : null,
-            'status' => isset($_GET['status']) ? intval($_GET['status']) : null
-        ];
-
-        // 承認ステータスによるフィルタリング
-        if ($afadConfig['approval_status']) {
-            $conversionStatus = $conversionData['status'] ?? 1; // デフォルトは承認待ち
-
-            if ($conversionStatus != $afadConfig['approval_status']) {
-                LogAFADInfo('Continue conversion status does not match config', [
-                    'access_id' => $access->getID(),
-                    'conversion_status' => $conversionStatus,
-                    'required_status' => $afadConfig['approval_status']
-                ]);
-                return;
-            }
-        }
-
-        // ポストバックを送信
-        $result = SendAFADPostback(
-            $afadConfig,
-            $afadSessionId,
-            $access->getID(),
-            $conversionData
-        );
-
-        // アクセスレコードを更新（継続課金用）
-        UpdateAccessAfterContinuePostback($access, $result);
-
-        LogAFADInfo('AFAD continue postback sent successfully', [
-            'access_id' => $access->getID(),
-            'afad_session_id' => $afadSessionId,
-            'status' => $result['status'],
-            'month' => $currentMonth
-        ]);
-
-    } catch (Exception $e) {
-        LogAFADError('AFAD continue conversion processing failed', $e->getMessage(), [
-            'adwares_id' => $adwares->getID(),
-            'access_id' => $access->getID()
-        ]);
-    }
-}
+// ProcessAFADContinueConversion()関数は削除されました。
+// 設計書準拠のSendAFADPostback()を使用してください（module/afad_postback.inc）
+// 継続課金の月次重複チェックは呼び出し元で実施します
 
 /**
  * 継続課金ポストバック送信後にアクセスレコードを更新

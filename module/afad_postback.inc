@@ -585,7 +585,7 @@ function SendHTTPRequest($url, $timeout = 10)
 }
 
 /**
- * AFADポストバックを送信
+ * AFADポストバックを送信（低レベルHTTP送信関数）
  *
  * @param array $afadConfig AFAD設定配列
  * @param string $sessionId AFADセッションID
@@ -593,7 +593,7 @@ function SendHTTPRequest($url, $timeout = 10)
  * @param array $conversionData 成果データ ['uid' => '', 'uid2' => '', 'amount' => 0, 'status' => 1]
  * @return array ['success' => bool, 'status' => int, 'response_body' => string, 'error' => string, 'retry_count' => int]
  */
-function SendAFADPostback($afadConfig, $sessionId, $accessId, $conversionData = [])
+function SendAFADPostbackHTTP($afadConfig, $sessionId, $accessId, $conversionData = [])
 {
     // バリデーション
     if (!$afadConfig || !isset($afadConfig['postback_url'])) {
@@ -1124,6 +1124,185 @@ function AppendURLParameter($url, $paramName, $paramValue)
 {
     $separator = (strpos($url, '?') !== false) ? '&' : '?';
     return $url . $separator . urlencode($paramName) . '=' . urlencode($paramValue);
+}
+
+/**
+ * ============================================================================
+ * 設計書準拠の高レベルAPI
+ * ============================================================================
+ */
+
+/**
+ * AFAD連携: セッションID受け取り処理
+ * 設計書6.1節に準拠
+ *
+ * @param object $adwares 広告情報オブジェクト（RecordModel）
+ * @param object $access アクセス情報オブジェクト（RecordModel）
+ */
+function HandleAFADSession($adwares, $access)
+{
+    global $CONFIG_AFAD_ENABLE;
+
+    if (!$CONFIG_AFAD_ENABLE) {
+        return;
+    }
+
+    try {
+        // AFAD設定を読み込み
+        $afadConfig = GetAFADConfig($adwares->getID());
+
+        if (!$afadConfig || !$afadConfig['enabled']) {
+            return; // AFAD連携無効
+        }
+
+        // パラメータ名からセッションIDを取得
+        $paramName = $afadConfig['parameter_name'];
+        $sessionId = GetAFADSessionId($paramName);
+
+        if (empty($sessionId)) {
+            // パラメータがない場合はスキップ
+            return;
+        }
+
+        // セッションIDをバリデーション
+        if (!ValidateAFADSessionId($sessionId)) {
+            WriteAFADLog('Invalid AFAD session ID format', $sessionId);
+            return;
+        }
+
+        // アクセスレコードに保存
+        $access->setData('afad_session_id', $sessionId);
+        $access->setData('afad_config_id', $afadConfig['id']);
+
+        // Cookieに保存(バックアップ用)
+        StoreAFADSessionIdToCookie(
+            $sessionId,
+            $afadConfig['cookie_expire_days'],
+            $paramName
+        );
+
+        // ログ記録
+        WriteAFADLog('AFAD session ID received', [
+            'adwares_id' => $adwares->getID(),
+            'access_id' => $access->getID(),
+            'session_id' => $sessionId
+        ]);
+
+    } catch (Exception $e) {
+        // AFAD連携のエラーはログに記録するが、メイン処理は継続
+        LogAFADError('AFAD session capture failed', $e->getMessage(), [
+            'adwares_id' => $adwares->getID()
+        ]);
+    }
+}
+
+/**
+ * AFAD連携: ポストバック送信処理
+ * 設計書6.2節に準拠
+ *
+ * @param object $adwares 広告情報オブジェクト（RecordModel）
+ * @param object $access アクセス情報オブジェクト（RecordModel）
+ * @param array $conversion 成果情報配列
+ */
+function SendAFADPostback($adwares, $access, $conversion)
+{
+    global $CONFIG_AFAD_ENABLE;
+
+    if (!$CONFIG_AFAD_ENABLE) {
+        return;
+    }
+
+    try {
+        // AFAD設定を読み込み
+        $afadConfig = GetAFADConfig($adwares->getID());
+
+        if (!$afadConfig || !$afadConfig['enabled']) {
+            return; // AFAD連携無効
+        }
+
+        // セッションIDを取得
+        $sessionId = $access->getData('afad_session_id');
+
+        if (empty($sessionId)) {
+            // Cookieからフォールバック取得
+            $sessionId = GetAFADSessionIdFromCookie();
+        }
+
+        if (empty($sessionId)) {
+            WriteAFADLog('AFAD session ID not found', [
+                'adwares_id' => $adwares->getID(),
+                'access_id' => $access->getID()
+            ]);
+            return;
+        }
+
+        // すでに送信済みかチェック
+        if ($access->getData('afad_postback_sent')) {
+            WriteAFADLog('AFAD postback already sent', [
+                'access_id' => $access->getID()
+            ]);
+            return;
+        }
+
+        // 成果データを準備
+        $conversionData = [
+            'uid' => $conversion['uid'] ?? null,
+            'uid2' => $conversion['uid2'] ?? null,
+            'amount' => $conversion['amount'] ?? null,
+            'status' => $conversion['status'] ?? null
+        ];
+
+        // 承認ステータスによるフィルタリング
+        if ($afadConfig['approval_status']) {
+            $conversionStatus = $conversionData['status'] ?? 1; // デフォルトは承認待ち
+
+            if ($conversionStatus != $afadConfig['approval_status']) {
+                LogAFADInfo('Conversion status does not match config', [
+                    'access_id' => $access->getID(),
+                    'conversion_status' => $conversionStatus,
+                    'required_status' => $afadConfig['approval_status']
+                ]);
+                return;
+            }
+        }
+
+        // ポストバックURL構築
+        $postbackUrl = BuildAFADPostbackURL($afadConfig, $sessionId, $conversionData);
+
+        // HTTPリクエスト送信
+        $result = SendAFADPostbackHTTP(
+            $afadConfig,
+            $sessionId,
+            $access->getID(),
+            $conversionData
+        );
+
+        // 送信結果をログに記録
+        WriteAFADLog('AFAD postback sent', [
+            'access_id' => $access->getID(),
+            'session_id' => $sessionId,
+            'url' => $postbackUrl,
+            'success' => $result['success']
+        ]);
+
+        // リトライ処理
+        if (!$result['success'] && $result['retry_count'] < $afadConfig['retry_max']) {
+            ScheduleAFADRetry(
+                $access->getID(),
+                $afadConfig['id'],
+                $sessionId,
+                $result['retry_count'],
+                $afadConfig['retry_max'],
+                $result['error']
+            );
+        }
+
+    } catch (Exception $e) {
+        LogAFADError('AFAD postback failed', $e->getMessage(), [
+            'adwares_id' => $adwares->getID(),
+            'access_id' => $access->getID()
+        ]);
+    }
 }
 
 ?>
