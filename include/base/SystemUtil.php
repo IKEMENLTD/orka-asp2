@@ -141,49 +141,6 @@ class SystemUtil {
 }
 
 /**
- * Account lock logic
- */
-class accountLockLogic {
-    private static $maxTries = 5;
-    private static $lockDuration = 900; // 15 minutes
-
-    public static function isTryOver() {
-        if (!isset($_SESSION['login_tries'])) {
-            return false;
-        }
-
-        if ($_SESSION['login_tries'] >= self::$maxTries) {
-            if (isset($_SESSION['lock_time'])) {
-                $elapsed = time() - $_SESSION['lock_time'];
-                if ($elapsed < self::$lockDuration) {
-                    return true;
-                } else {
-                    // Lock expired
-                    self::resetTryCount();
-                    return false;
-                }
-            }
-            $_SESSION['lock_time'] = time();
-            return true;
-        }
-
-        return false;
-    }
-
-    public static function addTryCount() {
-        if (!isset($_SESSION['login_tries'])) {
-            $_SESSION['login_tries'] = 0;
-        }
-        $_SESSION['login_tries']++;
-    }
-
-    public static function resetTryCount() {
-        unset($_SESSION['login_tries']);
-        unset($_SESSION['lock_time']);
-    }
-}
-
-/**
  * CheckData class for form validation
  */
 class CheckData {
