@@ -1,9 +1,9 @@
 <?php
 
 /*
-Ereportì¬—pƒ‚ƒWƒ…[ƒ‹
- $_GET['type']‚ª‘¶İ‚·‚éê‡‚ÍA‚»‚ÌDB‚Ìtdb“à—e‚ğ‚»‚Ì‚Ü‚Üæ“¾‚µ‚Ä•Ô‚·B
- $_GET['case']‚ª‘¶İ‚·‚éê‡‚ÍA/module/Report.inc‚Å’è‹`‚³‚ê‚½Œ`®‚Åreport‚ğo—Í‚·‚éB
+ï¿½Ereportï¿½ì¬ï¿½pï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½
+ $_GET['type']ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½ê‡ï¿½ÍAï¿½ï¿½ï¿½ï¿½DBï¿½ï¿½tdbï¿½ï¿½ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Ì‚Ü‚Üæ“¾ï¿½ï¿½ï¿½Ä•Ô‚ï¿½ï¿½B
+ $_GET['case']ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½ê‡ï¿½ÍA/module/Report.incï¿½Å’ï¿½`ï¿½ï¿½ï¿½ê‚½ï¿½`ï¿½ï¿½ï¿½ï¿½reportï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½ï¿½B
 
 */
     
@@ -13,10 +13,16 @@
 	{
 		include_once 'custom/head_main.php';
 
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+	// Redirect to login page if not authenticated
+	if ($loginUserType == $NOT_LOGIN_USER_TYPE) {
+		SystemUtil::innerLocation('login.php');
+		exit;
+	}
+
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½N
 		ConceptCheck::IsScalar( $_GET , Array( 'type' , 'run' , 'case' ) );
 		ConceptCheck::IsScalar( $_POST , Array( 'run' , 'case' , 'y' , 'm' ) );
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN‚±‚±‚Ü‚Å
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
 	    $rp = new mod_report();
 	    
@@ -69,7 +75,7 @@
 	        	}
 	        }
 	        
-	        if( isset($_POST['m']) && isset($_POST['y']) && strlen($_POST['m']) && strlen($_POST['y']) && is_numeric($_POST['y']) && is_numeric($_POST['m']) ){//ŠúŠÔƒf[ƒ^g‚Á‚ÄAsearch‚µ‚½Œ‹‰Ê‚ğCVS‚Éo—Í
+	        if( isset($_POST['m']) && isset($_POST['y']) && strlen($_POST['m']) && strlen($_POST['y']) && is_numeric($_POST['y']) && is_numeric($_POST['m']) ){//ï¿½ï¿½ï¿½Ôƒfï¿½[ï¿½^ï¿½gï¿½ï¿½ï¿½ÄAsearchï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½CVSï¿½Éoï¿½ï¿½
 	            $table	 = $db->searchTable( $table , 'regist', 'b', mktime( 0, 0, 0, $_POST['m'], 1, $_POST['y'] ), mktime( 0, 0, -1, $_POST['m'] + 1, 1, $_POST['y'] )  );
 	            
 	            $file_name = $_POST['y'].'_'.$_POST['m'].$file_name;
@@ -154,7 +160,7 @@
 		            	$table = $db->searchTable( $table, $table_data['owner'], '=', $LOGIN_ID );
 	            }
 	            
-	            if( isset($_POST['m']) && isset($_POST['y']) && strlen($_POST['m']) && strlen($_POST['y']) && is_numeric($_POST['y']) && is_numeric($_POST['m']) )//ŠúŠÔƒf[ƒ^g‚Á‚ÄAsearch‚µ‚½Œ‹‰Ê‚ğCVS‚Éo—Í
+	            if( isset($_POST['m']) && isset($_POST['y']) && strlen($_POST['m']) && strlen($_POST['y']) && is_numeric($_POST['y']) && is_numeric($_POST['m']) )//ï¿½ï¿½ï¿½Ôƒfï¿½[ï¿½^ï¿½gï¿½ï¿½ï¿½ÄAsearchï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½CVSï¿½Éoï¿½ï¿½
 	                $table	 = $db->searchTable( $table , 'regist', 'b', mktime( 0, 0, 0, $_POST['m'], 1, $_POST['y'] ), mktime( 0, 0, -1, $_POST['m'] + 1, 1, $_POST['y'] )  );
 	            
 	            $contents = Array();
@@ -177,7 +183,7 @@
 		        header('Content-Disposition: attachment; filename="'.$file_name.'.csv"');
 				header('Content-type: application/x-octet-stream; name="'.$file_name.'.csv"; charset=Shift_JIS');
 	
-				//ƒtƒ@ƒCƒ‹o—Í
+				//ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½oï¿½ï¿½
 		        $handle = fopen('php://output', 'w');
 		        
 		        if( isset($table_data['column']) ){
@@ -207,13 +213,13 @@
 	{
 		ob_end_clean();
 
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 
-		//—áŠO‚É‰‚¶‚ÄƒGƒ‰[ƒy[ƒW‚ğo—Í
+		//ï¿½ï¿½Oï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄƒGï¿½ï¿½ï¿½[ï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½ï¿½
 		$className = get_class( $e_ );
 		ExceptionManager::DrawErrorPage($className );
 	}

@@ -3,8 +3,8 @@
 	/*******************************************************************************************************
 	 * <PRE>
 	 *
-	 * info.php - ”Ä—pƒvƒƒOƒ‰ƒ€
-	 * “o˜^“à—eÚ×“à—eo—ÍB
+	 * info.php - ï¿½Ä—pï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	 * ï¿½oï¿½^ï¿½ï¿½ï¿½eï¿½Ú×“ï¿½ï¿½eï¿½oï¿½ÍB
 	 *
 	 * </PRE>
 	 *******************************************************************************************************/
@@ -15,17 +15,23 @@
 	{
 		include_once 'custom/head_main.php';
 
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+	// Redirect to login page if not authenticated
+	if ($loginUserType == $NOT_LOGIN_USER_TYPE) {
+		SystemUtil::innerLocation('login.php');
+		exit;
+	}
+
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½N
 		ConceptCheck::IsEssential( $_GET , Array( 'type' , 'id' ) );
 		ConceptCheck::IsNotNull( $_GET , Array( 'type' , 'id' ) );
 		ConceptCheck::IsScalar( $_GET , Array( 'type' , 'id' ) );
 
 		if( !$gm[ $_GET[ 'type' ] ] )
-			throw new IllegalAccessException( $key . '‚Í’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ' );
+			throw new IllegalAccessException( $key . 'ï¿½Í’ï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½' );
 
 		if( $THIS_TABLE_IS_NOHTML[ $_GET[ 'type' ] ] )
-			throw new IllegalAccessException( $key . '‚Í‘€ì‚Å‚«‚Ü‚¹‚ñ' );
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN‚±‚±‚Ü‚Å
+			throw new IllegalAccessException( $key . 'ï¿½Í‘ï¿½ï¿½ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½' );
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
 		print System::getHead($gm,$loginUserType,$loginUserRank);
 		
@@ -46,7 +52,7 @@
 			$rec	 = $db->selectRecord($_GET['id']);
 			
 			if( !isset($rec) )
-			{// ŠY“–ƒf[ƒ^‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡B
+			{// ï¿½Yï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½B
 				$sys->drawInfoError( $gm, $loginUserType, $loginUserRank );
 			}
 			else
@@ -60,10 +66,10 @@
 					
 					$sys->doInfo( $gm, $rec, $loginUserType, $loginUserRank );
 					
-					// ƒAƒNƒZƒXŒ ŒÀ‚É‰‚¶‚Ä“à—e‚ğ•`‰æB
+					// ï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½Ä“ï¿½ï¿½eï¿½ï¿½`ï¿½ï¿½B
 					$sys->drawInfo( $gm, $rec, $loginUserType, $loginUserRank );
 	            }else{
-	                //ŠY“–ƒf[ƒ^‚Ì•\¦‹–‰Â‚ª~‚è‚È‚©‚Á‚½B
+	                //ï¿½Yï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ì•\ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½~ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 	    			$sys->drawInfoError( $gm, $loginUserType, $loginUserRank );
 	            }
 			}
@@ -74,13 +80,13 @@
 	{
 		ob_end_clean();
 
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 
-		//—áŠO‚É‰‚¶‚ÄƒGƒ‰[ƒy[ƒW‚ğo—Í
+		//ï¿½ï¿½Oï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄƒGï¿½ï¿½ï¿½[ï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½ï¿½
 		$className = get_class( $e_ );
 		ExceptionManager::DrawErrorPage($className );
 	}
