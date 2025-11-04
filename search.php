@@ -3,8 +3,8 @@
 	/*******************************************************************************************************
 	 * <PRE>
 	 *
-	 * search.php - ”Ä—pƒvƒƒOƒ‰ƒ€
-	 * ŒŸõˆ—B
+	 * search.php - ï¿½Ä—pï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
 	 *
 	 * </PRE>
 	 *******************************************************************************************************/
@@ -15,15 +15,21 @@
 	{
 		include_once 'custom/head_main.php';
 
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+	// Redirect to login page if not authenticated
+	if ($loginUserType == $NOT_LOGIN_USER_TYPE) {
+		SystemUtil::innerLocation('login.php');
+		exit;
+	}
+
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½N
 		ConceptCheck::IsEssential( $_GET , Array( 'type' ) );
 		ConceptCheck::IsNotNull( $_GET , Array( 'type' ) );
 		ConceptCheck::IsScalar( $_GET , Array( 'type' , 'run' , 'searchNext' , 'nextUrl' ) );
 		ConceptCheck::IsScalar( $_POST , Array( 'run' ) );
 
 		if( !$gm[ $_GET[ 'type' ] ] )
-			throw new IllegalAccessException( $_GET[ 'type' ] . '‚Í’è‹`‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ' );
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN‚±‚±‚Ü‚Å
+			throw new IllegalAccessException( $_GET[ 'type' ] . 'ï¿½Í’ï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½' );
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
 		print System::getHead($gm,$loginUserType,$loginUserRank);
 		
@@ -42,7 +48,7 @@
 		        }
 		    }
 		    
-			// ƒf[ƒ^ƒx[ƒX‚ğŠJ‚­
+			// ï¿½fï¿½[ï¿½^ï¿½xï¿½[ï¿½Xï¿½ï¿½ï¿½Jï¿½ï¿½
 			$sr		 = new Search(  $gm[ $_GET['type'] ], $_GET['type']  );
 	
 			$db		 = $gm[ $_GET['type'] ]->getDB();
@@ -64,7 +70,7 @@
 							{ $_POST[  $gm[ $_GET['type'] ]->colName[$i]  ] = $_GET[  $gm[ $_GET['type'] ]->colName[$i]  ]; }
 					}
 					
-					// ŒŸõğŒ•`‰æ
+					// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½
 					$sys->drawSearchForm( $sr, $loginUserType, $loginUserRank );
 					
 				}
@@ -101,13 +107,13 @@
 	{
 		ob_end_clean();
 
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 
-		//—áŠO‚É‰‚¶‚ÄƒGƒ‰[ƒy[ƒW‚ğo—Í
+		//ï¿½ï¿½Oï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄƒGï¿½ï¿½ï¿½[ï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½ï¿½
 		$className = get_class( $e_ );
 		ExceptionManager::DrawErrorPage($className );
 	}

@@ -3,8 +3,8 @@
 	/*******************************************************************************************************
 	 * <PRE>
 	 *
-	 * other.php - ê—pƒvƒƒOƒ‰ƒ€
-	 * key‚É‚Äw’è‚µ‚½ƒtƒ@ƒCƒ‹‚ğo—Í‚µ‚Ü‚·B
+	 * other.php - ï¿½ï¿½pï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	 * keyï¿½É‚Äwï¿½è‚µï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 	 *
 	 * </PRE>
 	 *******************************************************************************************************/
@@ -15,7 +15,13 @@
 	{
 		include_once 'custom/head_main.php';
 
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+	// Redirect to login page if not authenticated
+	if ($loginUserType == $NOT_LOGIN_USER_TYPE) {
+		SystemUtil::innerLocation('login.php');
+		exit;
+	}
+
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½N
 		if( isset( $_GET[ 'page' ] ) )
 		{
 			ConceptCheck::IsNotNull( $_GET , Array( 'page' ) );
@@ -27,7 +33,7 @@
 			ConceptCheck::IsNotNull( $_GET , Array( 'key' ) );
 			ConceptCheck::IsScalar( $_GET , Array( 'key' ) );
 		}
-		//ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN‚±‚±‚Ü‚Å
+		//ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
 		print System::getHead($gm,$loginUserType,$loginUserRank);
 
@@ -64,13 +70,13 @@
 	{
 		ob_end_clean();
 
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 
-		//—áŠO‚É‰‚¶‚ÄƒGƒ‰[ƒy[ƒW‚ğo—Í
+		//ï¿½ï¿½Oï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄƒGï¿½ï¿½ï¿½[ï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½ï¿½
 		$className = get_class( $e_ );
 		ExceptionManager::DrawErrorPage($className );
 	}

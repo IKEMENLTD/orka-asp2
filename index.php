@@ -3,8 +3,8 @@
 	/*******************************************************************************************************
 	 * <PRE>
 	 *
-	 * index.php - ê—pƒvƒƒOƒ‰ƒ€
-	 * ƒCƒ“ƒfƒbƒNƒXƒy[ƒW‚ğo—Í‚µ‚Ü‚·B
+	 * index.php - ï¿½ï¿½pï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½
+	 * ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½Í‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 	 *
 	 * </PRE>
 	 *******************************************************************************************************/
@@ -14,7 +14,13 @@
 	{
 		include_once 'custom/head_main.php';
 
-		//Ğ‰îƒR[ƒhˆ—
+	// Redirect to login page if not authenticated
+	if ($loginUserType == $NOT_LOGIN_USER_TYPE) {
+		SystemUtil::innerLocation('login.php');
+		exit;
+	}
+
+		//ï¿½Ğ‰ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½
 		friendProc();
 
 		switch($loginUserType)
@@ -35,13 +41,13 @@
 	{
 		ob_end_clean();
 
-		//ƒGƒ‰[ƒƒbƒZ[ƒW‚ğƒƒO‚Éo—Í
+		//ï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Éoï¿½ï¿½
 		$errorManager = new ErrorManager();
 		$errorMessage = $errorManager->GetExceptionStr( $e_ );
 
 		$errorManager->OutputErrorLog( $errorMessage );
 
-		//—áŠO‚É‰‚¶‚ÄƒGƒ‰[ƒy[ƒW‚ğo—Í
+		//ï¿½ï¿½Oï¿½É‰ï¿½ï¿½ï¿½ï¿½ÄƒGï¿½ï¿½ï¿½[ï¿½yï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½ï¿½
 		$className = get_class( $e_ );
 		ExceptionManager::DrawErrorPage($className );
 	}
